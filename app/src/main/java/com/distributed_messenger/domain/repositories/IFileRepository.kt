@@ -8,6 +8,6 @@ interface IFileRepository {
     suspend fun getAllFiles(): List<File>
     suspend fun getFilesByUser(userId: UUID): List<File>
     suspend fun addFile(file: File): UUID
-    suspend fun updateFile(id: UUID, file: File): Boolean
+    suspend fun updateFile(file: File): Boolean
     suspend fun deleteFile(id: UUID): Boolean
 }

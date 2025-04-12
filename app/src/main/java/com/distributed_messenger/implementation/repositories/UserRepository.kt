@@ -16,7 +16,11 @@ class UserRepository(private val userDao: UserDao) : IUserRepository {
     }
 
     override suspend fun addUser(user: User): UUID {
-        return userDao.insertUser(user.toEntity())
+        val rowId = userDao.insertUser(user.toEntity())
+        if (rowId == -1L) {
+            throw Exception("Failed to insert user")
+        }
+        return user.id
     }
 
     override suspend fun updateUser(user: User): Boolean {
@@ -29,17 +33,23 @@ class UserRepository(private val userDao: UserDao) : IUserRepository {
 
     private fun User.toEntity(): UserEntity {
         return UserEntity(
-            id = id,
+            userId = id,
             username = username,
-            role = role
+            role = role,
+            blockedUsersId = blockedUsersId,
+            profileSettingsId = profileSettingsId,
+            appSettingsId = appSettingsId
         )
     }
 
     private fun UserEntity.toDomain(): User {
         return User(
-            id = id,
+            id = userId,
             username = username,
-            role = role
+            role = role,
+            blockedUsersId = blockedUsersId,
+            profileSettingsId = profileSettingsId,
+            appSettingsId = appSettingsId
         )
     }
 }

@@ -8,6 +8,6 @@ data class Message(
     val senderId: UUID,
     val chatId: UUID,
     val content: String,
-    val timestamp: Instant,
-    val fileId: UUID? = null
+    val fileId: UUID? = null,
+    val timestamp: Instant
 )

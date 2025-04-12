@@ -20,7 +20,11 @@ class BlockRepository(private val blockDao: BlockDao) : IBlockRepository {
     }
 
     override suspend fun addBlock(block: Block): UUID {
-        return blockDao.insertBlock(block.toEntity())
+        val rowId = blockDao.insertBlock(block.toEntity())
+        if (rowId == -1L) {
+            throw Exception("Failed to insert block")
+        }
+        return block.id
     }
 
     override suspend fun updateBlock(block: Block): Boolean {
@@ -30,23 +34,24 @@ class BlockRepository(private val blockDao: BlockDao) : IBlockRepository {
     override suspend fun deleteBlock(id: UUID): Boolean {
         return blockDao.deleteBlock(id) > 0
     }
+
     private fun Block.toEntity(): BlockEntity {
         return BlockEntity(
-            id = id,
+            blockId = id,
             blockerId = blockerId,
             blockedUserId = blockedUserId,
             reason = reason,
-            timestamp = timestamp
+            blockTimestamp = timestamp
         )
     }
 
     private fun BlockEntity.toDomain(): Block {
         return Block(
-            id = id,
+            id = blockId,
             blockerId = blockerId,
             blockedUserId = blockedUserId,
             reason = reason,
-            timestamp = timestamp
+            timestamp = blockTimestamp
         )
     }
 }

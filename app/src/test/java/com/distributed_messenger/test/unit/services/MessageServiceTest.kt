@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.util.UUID
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -33,12 +34,16 @@ class MessageServiceTest {
         coEvery { mockMessageRepository.addMessage(any()) } returns messageId
 
         // Act
-        val result = messageService.sendMessage(senderId, chatId, "Hello")
+        val result = messageService.sendMessage(senderId, chatId, "Hello", fileId = null)
 
         // Assert
         assertEquals(messageId, result)
         coVerify { mockMessageRepository.addMessage(match {
-            it.senderId == senderId && it.chatId == chatId && it.content == "Hello"
+            it.senderId == senderId &&
+                    it.chatId == chatId &&
+                    it.content == "Hello" &&
+                    it.fileId == null &&
+                    it.timestamp.isBefore(Instant.now().plusSeconds(1)) // Проверка, что время в разумных пределах
         }) }
     }
 
@@ -46,9 +51,14 @@ class MessageServiceTest {
     fun `getMessage should return message when exists`() = runTest {
         // Arrange
         val messageId = UUID.randomUUID()
-        val senderId = UUID.randomUUID()
-        val chatId = UUID.randomUUID()
-        val testMessage = Message(messageId, senderId, chatId, "Hello", Instant.now(), null)
+        val testMessage = Message(
+            id = messageId,
+            senderId = UUID.randomUUID(),
+            chatId = UUID.randomUUID(),
+            content = "Hello",
+            fileId = null,
+            timestamp = Instant.now()
+        )
         coEvery { mockMessageRepository.getMessage(messageId) } returns testMessage
 
         // Act
@@ -62,10 +72,11 @@ class MessageServiceTest {
     @Test
     fun `getMessage should return null when not exists`() = runTest {
         // Arrange
-        coEvery { mockMessageRepository.getMessage(UUID.randomUUID()) } returns null
+        val messageId = UUID.randomUUID()
+        coEvery { mockMessageRepository.getMessage(messageId) } returns null
 
         // Act
-        val result = messageService.getMessage(UUID.randomUUID())
+        val result = messageService.getMessage(messageId)
 
         // Assert
         assertNull(result)
@@ -76,8 +87,22 @@ class MessageServiceTest {
         // Arrange
         val chatId = UUID.randomUUID()
         val testMessages = listOf(
-            Message(UUID.randomUUID(), UUID.randomUUID(), chatId, "Hello", Instant.now(), null),
-            Message(UUID.randomUUID(), UUID.randomUUID(), chatId, "Hi", Instant.now(), null)
+            Message(
+                id = UUID.randomUUID(),
+                senderId = UUID.randomUUID(),
+                chatId = chatId,
+                content = "Hello",
+                fileId = null,
+                timestamp = Instant.now()
+            ),
+            Message(
+                id = UUID.randomUUID(),
+                senderId = UUID.randomUUID(),
+                chatId = chatId,
+                content = "Hi",
+                fileId = null,
+                timestamp = Instant.now()
+            )
         )
         coEvery { mockMessageRepository.getMessagesByChat(chatId) } returns testMessages
 
@@ -93,9 +118,16 @@ class MessageServiceTest {
     fun `editMessage should return true on success`() = runTest {
         // Arrange
         val messageId = UUID.randomUUID()
-        val original = Message(messageId, UUID.randomUUID(), UUID.randomUUID(), "Old", Instant.now(), null)
+        val original = Message(
+            id = messageId,
+            senderId = UUID.randomUUID(),
+            chatId = UUID.randomUUID(),
+            content = "Old",
+            fileId = null,
+            timestamp = Instant.now()
+        )
         coEvery { mockMessageRepository.getMessage(messageId) } returns original
-        coEvery { mockMessageRepository.updateMessage(messageId, any()) } returns true
+        coEvery { mockMessageRepository.updateMessage(any()) } returns true
 
         // Act
         val result = messageService.editMessage(messageId, "New")
@@ -103,8 +135,8 @@ class MessageServiceTest {
         // Assert
         assertTrue(result)
         coVerify {
-            mockMessageRepository.updateMessage(messageId, match {
-                it.id == messageId && it.content == "New"
+            mockMessageRepository.updateMessage(match {
+                it.id == messageId && it.content == "New" && it.timestamp == original.timestamp
             })
         }
     }
@@ -112,13 +144,15 @@ class MessageServiceTest {
     @Test
     fun `editMessage should return false when message not found`() = runTest {
         // Arrange
-        coEvery { mockMessageRepository.getMessage(UUID.randomUUID()) } returns null
+        val messageId = UUID.randomUUID()
+        coEvery { mockMessageRepository.getMessage(messageId) } returns null
 
         // Act
-        val result = messageService.editMessage(UUID.randomUUID(), "New")
+        val result = messageService.editMessage(messageId, "New")
 
         // Assert
-        assertTrue(!result)
+        assertFalse(result)
+        coVerify(exactly = 0) { mockMessageRepository.updateMessage(any()) }
     }
 
     @Test
@@ -132,5 +166,6 @@ class MessageServiceTest {
 
         // Assert
         assertTrue(result)
+        coVerify { mockMessageRepository.deleteMessage(messageId) }
     }
 }

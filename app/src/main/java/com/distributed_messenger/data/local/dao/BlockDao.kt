@@ -10,7 +10,7 @@ import java.util.UUID
 
 @Dao
 interface BlockDao {
-    @Query("SELECT * FROM blocked_users WHERE id = :id")
+    @Query("SELECT * FROM blocked_users WHERE block_id = :id")
     suspend fun getBlockById(id: UUID): BlockEntity?
 
     @Query("SELECT * FROM blocked_users")
@@ -25,6 +25,7 @@ interface BlockDao {
     @Update
     suspend fun updateBlock(block: BlockEntity): Int
 
-    @Delete
+    // @Delete
+    @Query("DELETE FROM blocked_users WHERE block_id = :id")
     suspend fun deleteBlock(id: UUID): Int
 }

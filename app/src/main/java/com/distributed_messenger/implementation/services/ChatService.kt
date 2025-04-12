@@ -32,8 +32,8 @@ class ChatService(private val chatRepository: IChatRepository) : IChatService {
 
     override suspend fun updateChat(id: UUID, name: String): Boolean {
         val chat = chatRepository.getChat(id) ?: return false
-        val updatedChat = chat.copy(name = name)
-        return chatRepository.updateChat(id, updatedChat)
+        val updatedChat = chat.copy(id = id, name = name)
+        return chatRepository.updateChat(updatedChat)
     }
 
     override suspend fun deleteChat(id: UUID): Boolean {

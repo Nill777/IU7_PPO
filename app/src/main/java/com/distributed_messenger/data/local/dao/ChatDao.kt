@@ -10,7 +10,7 @@ import java.util.UUID
 
 @Dao
 interface ChatDao {
-    @Query("SELECT * FROM chats WHERE id = :id")
+    @Query("SELECT * FROM chats WHERE chat_id = :id")
     suspend fun getChatById(id: UUID): ChatEntity?
 
     @Query("SELECT * FROM chats")
@@ -25,6 +25,7 @@ interface ChatDao {
     @Update
     suspend fun updateChat(chat: ChatEntity): Int
 
-    @Delete
+    // @Delete
+    @Query("DELETE FROM chats WHERE chat_id = :id")
     suspend fun deleteChat(id: UUID): Int
 }

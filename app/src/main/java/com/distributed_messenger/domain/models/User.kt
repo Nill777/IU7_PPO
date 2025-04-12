@@ -12,5 +12,8 @@ enum class UserRole {
 data class User(
     val id: UUID,
     val username: String,
-    val role: UserRole
+    val role: UserRole,
+    val blockedUsersId: UUID?,
+    val profileSettingsId: UUID,
+    val appSettingsId: UUID
 )

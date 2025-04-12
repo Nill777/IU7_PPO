@@ -10,7 +10,7 @@ import java.util.UUID
 
 @Dao
 interface MessageDao {
-    @Query("SELECT * FROM messages WHERE id = :id")
+    @Query("SELECT * FROM messages WHERE message_id = :id")
     suspend fun getMessageById(id: UUID): MessageEntity?
 
     @Query("SELECT * FROM messages")
@@ -25,6 +25,7 @@ interface MessageDao {
     @Update
     suspend fun updateMessage(message: MessageEntity): Int
 
-    @Delete
-    suspend fun deleteMessage(message: MessageEntity): Int
+    // @Delete
+    @Query("DELETE FROM messages WHERE message_id = :id")
+    suspend fun deleteMessage(id: UUID): Int
 }

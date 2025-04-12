@@ -2,6 +2,7 @@ package com.distributed_messenger.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.distributed_messenger.data.local.dao.*
 import com.distributed_messenger.data.local.entities.*
 
@@ -15,6 +16,8 @@ import com.distributed_messenger.data.local.entities.*
     ],
     version = 1
 )
+@TypeConverters(Converters::class)
+
 abstract class AppDatabase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
     abstract fun chatDao(): ChatDao

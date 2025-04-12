@@ -8,9 +8,9 @@ import java.util.UUID
 
 @Entity(tableName = "blocked_users")
 data class BlockEntity(
-    @PrimaryKey val id: UUID = UUID.randomUUID(),
+    @PrimaryKey @ColumnInfo(name = "block_id") val blockId: UUID = UUID.randomUUID(),
     @ColumnInfo(name = "blocker_id") val blockerId: UUID,
     @ColumnInfo(name = "blocked_user_id") val blockedUserId: UUID,
     @ColumnInfo(name = "reason") val reason: String? = null,
-    @ColumnInfo(name = "block_timestamp") val timestamp: Instant
+    @ColumnInfo(name = "block_timestamp") val blockTimestamp: Instant
 )

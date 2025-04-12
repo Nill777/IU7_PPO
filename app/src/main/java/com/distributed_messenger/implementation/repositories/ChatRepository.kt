@@ -20,7 +20,11 @@ class ChatRepository(private val chatDao: ChatDao) : IChatRepository {
     }
 
     override suspend fun addChat(chat: Chat): UUID {
-        return chatDao.insertChat(chat.toEntity())
+        val rowId = chatDao.insertChat(chat.toEntity())
+        if (rowId == -1L) {
+            throw Exception("Failed to insert chat")
+        }
+        return chat.id
     }
 
     override suspend fun updateChat(chat: Chat): Boolean {
@@ -33,9 +37,9 @@ class ChatRepository(private val chatDao: ChatDao) : IChatRepository {
 
     private fun Chat.toEntity(): ChatEntity {
         return ChatEntity(
-            id = id,
-            name = name,
-            creatorId = creatorId,
+            chatId = id,
+            chatName = name,
+            userId = creatorId,
             companionId = companionId,
             isGroupChat = isGroupChat
         )
@@ -43,9 +47,9 @@ class ChatRepository(private val chatDao: ChatDao) : IChatRepository {
 
     private fun ChatEntity.toDomain(): Chat {
         return Chat(
-            id = id,
-            name = name,
-            creatorId = creatorId,
+            id = chatId,
+            name = chatName,
+            creatorId = userId,
             companionId = companionId,
             isGroupChat = isGroupChat
         )

@@ -7,9 +7,9 @@ import java.util.UUID
 
 @Entity(tableName = "chats")
 data class ChatEntity(
-    @PrimaryKey val id: UUID = UUID.randomUUID(),
-    @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "user_id") val creatorId: UUID,
+    @PrimaryKey @ColumnInfo(name = "chat_id") val chatId: UUID = UUID.randomUUID(),
+    @ColumnInfo(name = "chat_name") val chatName: String,
+    @ColumnInfo(name = "user_id") val userId: UUID,
     @ColumnInfo(name = "companion_id") val companionId: UUID? = null,
     @ColumnInfo(name = "is_group_chat") val isGroupChat: Boolean = false
 )

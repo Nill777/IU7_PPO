@@ -10,7 +10,7 @@ import java.util.UUID
 
 @Dao
 interface FileDao {
-    @Query("SELECT * FROM files WHERE id = :id")
+    @Query("SELECT * FROM files WHERE file_id = :id")
     suspend fun getFileById(id: UUID): FileEntity?
 
     @Query("SELECT * FROM files")
@@ -25,6 +25,7 @@ interface FileDao {
     @Update
     suspend fun updateFile(file: FileEntity): Int
 
-    @Delete
-    suspend fun deleteFile(file: FileEntity): Int
+    // @Delete
+    @Query("DELETE FROM files WHERE file_id = :id")
+    suspend fun deleteFile(id: UUID): Int
 }

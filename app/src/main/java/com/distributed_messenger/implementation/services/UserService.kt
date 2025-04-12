@@ -11,7 +11,10 @@ class UserService(private val userRepository: IUserRepository) : IUserService {
         val user = User(
             id = UUID.randomUUID(),
             username = username,
-            role = role
+            role = role,
+            blockedUsersId = null,
+            profileSettingsId = UUID.randomUUID(),
+            appSettingsId = UUID.randomUUID()
         )
         return userRepository.addUser(user)
     }
@@ -26,8 +29,8 @@ class UserService(private val userRepository: IUserRepository) : IUserService {
 
     override suspend fun updateUser(id: UUID, username: String): Boolean {
         val user = userRepository.getUser(id) ?: return false
-        val updatedUser = user.copy(username = username)
-        return userRepository.updateUser(id, updatedUser)
+        val updatedUser = user.copy(id = id, username = username)
+        return userRepository.updateUser(updatedUser)
     }
 
     override suspend fun deleteUser(id: UUID): Boolean {

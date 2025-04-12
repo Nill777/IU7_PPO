@@ -10,18 +10,19 @@ import java.util.UUID
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM users WHERE id = :id")
+    @Query("SELECT * FROM users WHERE user_id = :id")
     suspend fun getUserById(id: UUID): UserEntity?
 
     @Query("SELECT * FROM users")
     suspend fun getAllUsers(): List<UserEntity>
 
     @Insert
-    suspend fun insertUser(user: UserEntity): UUID
+    suspend fun insertUser(user: UserEntity): Long
 
     @Update
-    suspend fun updateUser(user: UserEntity): Boolean
+    suspend fun updateUser(user: UserEntity): Int
 
-    @Delete
+    // @Delete
+    @Query("DELETE FROM users WHERE user_id = :id")
     suspend fun deleteUser(id: UUID): Int
 }

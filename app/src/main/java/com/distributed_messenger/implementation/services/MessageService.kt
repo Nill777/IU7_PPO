@@ -29,8 +29,8 @@ class MessageService(private val messageRepository: IMessageRepository) : IMessa
 
     override suspend fun editMessage(id: UUID, newContent: String): Boolean {
         val message = messageRepository.getMessage(id) ?: return false
-        val updatedMessage = message.copy(content = newContent)
-        return messageRepository.updateMessage(id, updatedMessage)
+        val updatedMessage = message.copy(id = id, content = newContent)
+        return messageRepository.updateMessage(updatedMessage)
     }
 
     override suspend fun deleteMessage(id: UUID): Boolean {

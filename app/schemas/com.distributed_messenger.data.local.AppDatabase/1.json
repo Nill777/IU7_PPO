@@ -2,28 +2,28 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f1ebbb42ea5eeb5b17e4169259deec8e",
+    "identityHash": "28f074f85b1abf09db9a1aa6ae2d9c82",
     "entities": [
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sender_id` INTEGER NOT NULL, `chat_id` INTEGER NOT NULL, `content` TEXT NOT NULL, `timestamp` TEXT NOT NULL, `file_id` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`message_id` TEXT NOT NULL, `sender_id` TEXT NOT NULL, `chat_id` TEXT NOT NULL, `content` TEXT NOT NULL, `file_id` TEXT, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`message_id`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "fieldPath": "messageId",
+            "columnName": "message_id",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "senderId",
             "columnName": "sender_id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "chatId",
             "columnName": "chat_id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -33,50 +33,50 @@
             "notNull": true
           },
           {
-            "fieldPath": "timestamp",
-            "columnName": "timestamp",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
             "fieldPath": "fileId",
             "columnName": "file_id",
-            "affinity": "INTEGER"
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "message_id"
           ]
         }
       },
       {
         "tableName": "chats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `user_id` INTEGER NOT NULL, `companion_id` INTEGER, `is_group_chat` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`chat_id` TEXT NOT NULL, `chat_name` TEXT NOT NULL, `user_id` TEXT NOT NULL, `companion_id` TEXT, `is_group_chat` INTEGER NOT NULL, PRIMARY KEY(`chat_id`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "chatId",
+            "columnName": "chat_id",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "creatorId",
+            "fieldPath": "chatName",
+            "columnName": "chat_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
             "columnName": "user_id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "companionId",
             "columnName": "companion_id",
-            "affinity": "INTEGER"
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "isGroupChat",
@@ -86,20 +86,20 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "chat_id"
           ]
         }
       },
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `username` TEXT NOT NULL, `role` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` TEXT NOT NULL, `username` TEXT NOT NULL, `role` TEXT NOT NULL, `blocked_users_id` TEXT, `profile_settings_id` TEXT NOT NULL, `app_settings_id` TEXT NOT NULL, PRIMARY KEY(`user_id`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -113,23 +113,40 @@
             "columnName": "role",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "blockedUsersId",
+            "columnName": "blocked_users_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "profileSettingsId",
+            "columnName": "profile_settings_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appSettingsId",
+            "columnName": "app_settings_id",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "user_id"
           ]
         }
       },
       {
         "tableName": "files",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `path` TEXT NOT NULL, `uploaded_by` INTEGER NOT NULL, `uploaded_timestamp` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`file_id` TEXT NOT NULL, `name` TEXT NOT NULL, `type` TEXT, `path` TEXT NOT NULL, `uploaded_by` TEXT NOT NULL, `uploaded_timestamp` INTEGER NOT NULL, PRIMARY KEY(`file_id`))",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "columnName": "file_id",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -141,8 +158,7 @@
           {
             "fieldPath": "type",
             "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "path",
@@ -153,43 +169,43 @@
           {
             "fieldPath": "uploadedBy",
             "columnName": "uploaded_by",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "uploadedTimestamp",
             "columnName": "uploaded_timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "file_id"
           ]
         }
       },
       {
         "tableName": "blocked_users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `blocker_id` INTEGER NOT NULL, `blocked_user_id` INTEGER NOT NULL, `reason` TEXT, `block_timestamp` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`block_id` TEXT NOT NULL, `blocker_id` TEXT NOT NULL, `blocked_user_id` TEXT NOT NULL, `reason` TEXT, `block_timestamp` INTEGER NOT NULL, PRIMARY KEY(`block_id`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "fieldPath": "blockId",
+            "columnName": "block_id",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "blockerId",
             "columnName": "blocker_id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "blockedUserId",
             "columnName": "blocked_user_id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -198,23 +214,23 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "timestamp",
+            "fieldPath": "blockTimestamp",
             "columnName": "block_timestamp",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
-            "id"
+            "block_id"
           ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1ebbb42ea5eeb5b17e4169259deec8e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '28f074f85b1abf09db9a1aa6ae2d9c82')"
     ]
   }
 }
