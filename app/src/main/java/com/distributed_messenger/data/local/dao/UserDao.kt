@@ -16,6 +16,9 @@ interface UserDao {
     @Query("SELECT * FROM users")
     suspend fun getAllUsers(): List<UserEntity>
 
+    @Query("SELECT * FROM users WHERE user_id = :username")
+    suspend fun findByUsername(username: String): UserEntity?
+
     @Insert
     suspend fun insertUser(user: UserEntity): Long
 

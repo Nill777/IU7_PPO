@@ -3,64 +3,74 @@ package com.distributed_messenger.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.distributed_messenger.presenter.viewmodels.AuthViewModel
+import com.distributed_messenger.presenter.viewmodels.AuthViewModel.AuthState
+import com.distributed_messenger.domain.models.UserRole
+import com.distributed_messenger.ui.NavigationController
 
+// ui/screens/AuthScreen.kt
 @Composable
-fun AuthScreen(authViewModel: AuthViewModel) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    val errorMessage by authViewModel.errorMessage.collectAsState()
+fun AuthScreen(
+    viewModel: AuthViewModel,
+    navigationController: NavigationController
+) {
+    // Подписываемся на "статус" от ViewModel
+    // collectAsState() превращает Flow в "живое состояние", которое автоматически обновляет UI
+    val authState by viewModel.authState.collectAsState()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = "Аутентификация",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
+        // Поля ввода
+        // remember — "запоминание" значения между обновлениями UI
+        // mutableStateOf — "магнитная доска", изменения на которой автоматически обновляют экран
+        var username by remember { mutableStateOf("") }
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Логин") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("Username") }
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Пароль") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        if (errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+        // Кнопки действий
+        Button(
+            onClick = { viewModel.register(username, UserRole.USER) },
+            enabled = authState !is AuthState.Loading
+        ) {
+            Text("Register")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Button(
-            onClick = { authViewModel.temporaryLogin(username) },
-            modifier = Modifier.fillMaxWidth()
+            onClick = { viewModel.login(username) },
+            enabled = authState !is AuthState.Loading
         ) {
-            Text("Войти")
+            Text("Login")
+        }
+
+        // Обработка состояний
+        when (authState) {
+            is AuthState.Loading -> CircularProgressIndicator() // спиннер загрузки, как вращающийся значок
+            is AuthState.RegistrationSuccess -> {
+                // Unit — это аналог void в Kotlin, но как объект
+                LaunchedEffect(Unit) {
+                    navigationController.navigateToProfile()
+                }
+            }
+            is AuthState.LoginSuccess -> {
+                LaunchedEffect(Unit) {
+                    navigationController.navigateToHome()
+                }
+            }
+            is AuthState.Error -> {
+                Text(
+                    text = (authState as AuthState.Error).message,
+                    color = Color.Red
+                )
+            }
+            else -> {}
         }
     }
 }

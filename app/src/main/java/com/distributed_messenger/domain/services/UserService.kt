@@ -19,6 +19,10 @@ class UserService(private val userRepository: IUserRepository) : IUserService {
         return userRepository.addUser(user)
     }
 
+    override suspend fun login(username: String): UUID? {
+        return userRepository.findByUsername(username)?.id
+    }
+
     override suspend fun getUser(id: UUID): User? {
         return userRepository.getUser(id)
     }

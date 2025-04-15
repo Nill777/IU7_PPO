@@ -15,6 +15,10 @@ class UserRepository(private val userDao: UserDao) : IUserRepository {
         return userDao.getAllUsers().map { it.toDomain() }
     }
 
+    override suspend fun findByUsername(username: String): User? {
+        return userDao.findByUsername(username)?.toDomain()
+    }
+
     override suspend fun addUser(user: User): UUID {
         val rowId = userDao.insertUser(user.toEntity())
         if (rowId == -1L) {

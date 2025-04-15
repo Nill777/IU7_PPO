@@ -4,67 +4,80 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.distributed_messenger.domain.controllers.UserController
-import com.distributed_messenger.domain.models.UserRole
-import com.distributed_messenger.domain.iservices.IUserService
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.distributed_messenger.data.local.AppDatabase
+import com.distributed_messenger.data.local.dao.UserDao
+import com.distributed_messenger.data.local.repositories.UserRepository
+import com.distributed_messenger.domain.services.UserService
+import com.distributed_messenger.presenter.viewmodels.AuthViewModel
+import com.distributed_messenger.ui.NavigationController
 import com.distributed_messenger.ui.screens.AuthScreen
 import com.distributed_messenger.ui.screens.MainScreen
-import com.distributed_messenger.ui.theme.Distributed_messengerTheme
-import com.distributed_messenger.presenter.viewmodels.AuthViewModel
-import java.util.UUID
+import com.distributed_messenger.ui.screens.ProfileScreen
 
 class MainActivity : ComponentActivity() {
-    // Инициализация зависимостей
-    private val userService: IUserService by lazy { UserServiceStub() }
-    private val userController: UserController by lazy { UserController(userService) }
+    // 1. Инициализация Room Database
+    private val appDatabase: AppDatabase by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "messenger-db"
+        ).build()
+    }
+    // 2. Получение UserDao из базы данных
+    private val userDao: UserDao by lazy {
+        appDatabase.userDao()
+    }
+    // 3. Создание UserRepository с UserDao
+    private val userRepository: UserRepository by lazy {
+        UserRepository(userDao)
+    }
+    // 4. Создание UserService с UserRepository
+    private val userService: UserService by lazy {
+        UserService(userRepository)
+    }
 
+    // 5. Передача userService в AuthViewModel
     private val authViewModel: AuthViewModel by viewModels {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return AuthViewModel(userController) as T
+                return AuthViewModel(userService) as T
             }
         }
     }
 
+//    private val authViewModel: AuthViewModel by viewModels()
+    private lateinit var navController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Distributed_messengerTheme {
-                val isAuthenticated by authViewModel.isAuthenticated.collectAsState()
+            // remember гарантирует, что объект не пересоздаётся при рекомпозициях.
+            navController = rememberNavController()
+            val navigationController = NavigationController(navController)
 
-                if (isAuthenticated) {
-                    MainScreen()
-                } else {
-                    AuthScreen(authViewModel = authViewModel)
+            NavHost(navController, startDestination = "auth") {
+                composable("auth") {
+                    AuthScreen(
+                        viewModel = authViewModel,
+                        navigationController = navigationController
+                    )
+                }
+                composable("home") {
+                    MainScreen(navigationController = navigationController)
+                }
+                composable("profile") {
+                    ProfileScreen(navigationController = navigationController)
                 }
             }
         }
     }
 }
 
-// Заглушка сервиса для примера
-class UserServiceStub : IUserService {
-    private val users = mutableListOf<com.distributed_messenger.domain.models.User>()
-
-    override suspend fun register(username: String, role: UserRole): UUID {
-        val user = com.distributed_messenger.domain.models.User(
-            id = UUID.randomUUID(),
-            username = username,
-            role = role,
-            blockedUsersId = null,
-            profileSettingsId = UUID.randomUUID(),
-            appSettingsId = UUID.randomUUID()
-        )
-        users.add(user)
-        return user.id
-    }
-
-    override suspend fun getUser(id: UUID) = users.find { it.id == id }
-    override suspend fun getAllUsers() = users.toList()
-    override suspend fun updateUser(id: UUID, username: String) = true
-    override suspend fun deleteUser(id: UUID) = true
-}

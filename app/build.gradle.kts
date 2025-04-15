@@ -84,6 +84,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Navigation
+     implementation(libs.androidx.navigation.compose)
+
     // Unit тесты
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
