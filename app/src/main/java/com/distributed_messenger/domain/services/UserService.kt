@@ -1,9 +1,9 @@
-package com.distributed_messenger.implementation.services
+package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.domain.models.User
 import com.distributed_messenger.domain.models.UserRole
-import com.distributed_messenger.domain.services.IUserService
-import com.distributed_messenger.domain.repositories.IUserRepository
+import com.distributed_messenger.domain.iservices.IUserService
+import com.distributed_messenger.data.local.irepositories.IUserRepository
 import java.util.UUID
 
 class UserService(private val userRepository: IUserRepository) : IUserService {

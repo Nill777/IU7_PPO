@@ -1,6 +1,6 @@
 package com.distributed_messenger.domain.controllers
 
-import com.distributed_messenger.domain.services.IFileService
+import com.distributed_messenger.domain.iservices.IFileService
 import java.util.UUID
 
 class FileController(private val fileService: IFileService) {

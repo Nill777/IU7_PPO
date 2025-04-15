@@ -1,8 +1,8 @@
-package com.distributed_messenger.implementation.services
+package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.domain.models.Block
-import com.distributed_messenger.domain.services.IBlockService
-import com.distributed_messenger.domain.repositories.IBlockRepository
+import com.distributed_messenger.domain.iservices.IBlockService
+import com.distributed_messenger.data.local.irepositories.IBlockRepository
 import java.util.UUID
 import java.time.Instant
 

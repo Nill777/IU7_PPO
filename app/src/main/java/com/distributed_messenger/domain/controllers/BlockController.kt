@@ -1,6 +1,6 @@
 package com.distributed_messenger.domain.controllers
 
-import com.distributed_messenger.domain.services.IBlockService
+import com.distributed_messenger.domain.iservices.IBlockService
 import java.util.UUID
 
 class BlockController(private val blockService: IBlockService) {

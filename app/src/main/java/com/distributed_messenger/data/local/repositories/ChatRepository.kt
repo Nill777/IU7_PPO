@@ -1,7 +1,7 @@
-package com.distributed_messenger.implementation.repositories
+package com.distributed_messenger.data.local.repositories
 
 import com.distributed_messenger.domain.models.Chat
-import com.distributed_messenger.domain.repositories.IChatRepository
+import com.distributed_messenger.data.local.irepositories.IChatRepository
 import com.distributed_messenger.data.local.dao.ChatDao
 import com.distributed_messenger.data.local.entities.ChatEntity
 import java.util.UUID

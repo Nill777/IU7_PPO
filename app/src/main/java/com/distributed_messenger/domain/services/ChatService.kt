@@ -1,8 +1,8 @@
-package com.distributed_messenger.implementation.services
+package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.domain.models.Chat
-import com.distributed_messenger.domain.services.IChatService
-import com.distributed_messenger.domain.repositories.IChatRepository
+import com.distributed_messenger.domain.iservices.IChatService
+import com.distributed_messenger.data.local.irepositories.IChatRepository
 import java.util.UUID
 
 class ChatService(private val chatRepository: IChatRepository) : IChatService {

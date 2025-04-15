@@ -4,7 +4,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.distributed_messenger.data.local.AppDatabase
 import com.distributed_messenger.domain.models.Block
-import com.distributed_messenger.implementation.repositories.BlockRepository
+import com.distributed_messenger.data.local.repositories.BlockRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*

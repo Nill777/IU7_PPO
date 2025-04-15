@@ -7,7 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.distributed_messenger.viewmodels.AuthViewModel
+import com.distributed_messenger.presenter.viewmodels.AuthViewModel
 
 @Composable
 fun AuthScreen(authViewModel: AuthViewModel) {
@@ -57,7 +57,7 @@ fun AuthScreen(authViewModel: AuthViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { authViewModel.login(username, password) },
+            onClick = { authViewModel.temporaryLogin(username) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Войти")

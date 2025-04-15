@@ -1,6 +1,6 @@
 package com.distributed_messenger.domain.controllers
 
-import com.distributed_messenger.domain.services.IChatService
+import com.distributed_messenger.domain.iservices.IChatService
 import java.util.UUID
 
 class ChatController(private val chatService: IChatService) {

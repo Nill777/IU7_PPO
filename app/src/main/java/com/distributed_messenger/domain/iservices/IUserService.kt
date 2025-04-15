@@ -1,4 +1,4 @@
-package com.distributed_messenger.domain.services
+package com.distributed_messenger.domain.iservices
 
 import com.distributed_messenger.domain.models.User
 import com.distributed_messenger.domain.models.UserRole

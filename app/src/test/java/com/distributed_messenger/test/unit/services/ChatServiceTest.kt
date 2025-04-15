@@ -1,8 +1,8 @@
 package com.distributed_messenger.test.unit.services
 
 import com.distributed_messenger.domain.models.Chat
-import com.distributed_messenger.domain.repositories.IChatRepository
-import com.distributed_messenger.implementation.services.ChatService
+import com.distributed_messenger.data.local.irepositories.IChatRepository
+import com.distributed_messenger.domain.services.ChatService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

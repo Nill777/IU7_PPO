@@ -1,7 +1,7 @@
-package com.distributed_messenger.implementation.repositories
+package com.distributed_messenger.data.local.repositories
 
 import com.distributed_messenger.domain.models.Message
-import com.distributed_messenger.domain.repositories.IMessageRepository
+import com.distributed_messenger.data.local.irepositories.IMessageRepository
 import com.distributed_messenger.data.local.dao.MessageDao
 import com.distributed_messenger.data.local.entities.MessageEntity
 import java.util.UUID

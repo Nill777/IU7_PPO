@@ -1,8 +1,8 @@
-package com.distributed_messenger.implementation.services
+package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.domain.models.Message
-import com.distributed_messenger.domain.services.IMessageService
-import com.distributed_messenger.domain.repositories.IMessageRepository
+import com.distributed_messenger.domain.iservices.IMessageService
+import com.distributed_messenger.data.local.irepositories.IMessageRepository
 import java.util.UUID
 import java.time.Instant
 

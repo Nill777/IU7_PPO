@@ -2,8 +2,8 @@ package com.distributed_messenger.test.unit.services
 
 import com.distributed_messenger.domain.models.User
 import com.distributed_messenger.domain.models.UserRole
-import com.distributed_messenger.domain.repositories.IUserRepository
-import com.distributed_messenger.implementation.services.UserService
+import com.distributed_messenger.data.local.irepositories.IUserRepository
+import com.distributed_messenger.domain.services.UserService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

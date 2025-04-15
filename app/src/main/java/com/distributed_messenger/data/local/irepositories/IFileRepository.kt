@@ -1,4 +1,4 @@
-package com.distributed_messenger.domain.repositories
+package com.distributed_messenger.data.local.irepositories
 
 import com.distributed_messenger.domain.models.File
 import java.util.UUID

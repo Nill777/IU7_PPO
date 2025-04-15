@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.distributed_messenger.viewmodels.AuthViewModel
+import com.distributed_messenger.presenter.viewmodels.AuthViewModel
 
 @Composable
 fun MainScreen() {

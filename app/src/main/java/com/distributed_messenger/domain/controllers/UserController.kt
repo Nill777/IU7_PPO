@@ -1,7 +1,7 @@
 package com.distributed_messenger.domain.controllers
 
 import com.distributed_messenger.domain.models.UserRole
-import com.distributed_messenger.domain.services.IUserService
+import com.distributed_messenger.domain.iservices.IUserService
 import java.util.UUID
 
 class UserController(private val userService: IUserService) {

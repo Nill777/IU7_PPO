@@ -1,7 +1,7 @@
-package com.distributed_messenger.implementation.repositories
+package com.distributed_messenger.data.local.repositories
 
 import com.distributed_messenger.domain.models.File
-import com.distributed_messenger.domain.repositories.IFileRepository
+import com.distributed_messenger.data.local.irepositories.IFileRepository
 import com.distributed_messenger.data.local.dao.FileDao
 import com.distributed_messenger.data.local.entities.FileEntity
 import java.util.UUID

@@ -1,8 +1,8 @@
 package com.distributed_messenger.test.unit.services
 
 import com.distributed_messenger.domain.models.Message
-import com.distributed_messenger.domain.repositories.IMessageRepository
-import com.distributed_messenger.implementation.services.MessageService
+import com.distributed_messenger.data.local.irepositories.IMessageRepository
+import com.distributed_messenger.domain.services.MessageService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

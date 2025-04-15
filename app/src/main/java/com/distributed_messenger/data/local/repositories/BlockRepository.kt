@@ -1,7 +1,7 @@
-package com.distributed_messenger.implementation.repositories
+package com.distributed_messenger.data.local.repositories
 
 import com.distributed_messenger.domain.models.Block
-import com.distributed_messenger.domain.repositories.IBlockRepository
+import com.distributed_messenger.data.local.irepositories.IBlockRepository
 import com.distributed_messenger.data.local.dao.BlockDao
 import com.distributed_messenger.data.local.entities.BlockEntity
 import java.util.UUID

@@ -1,8 +1,8 @@
 package com.distributed_messenger.test.unit.services
 
 import com.distributed_messenger.domain.models.Block
-import com.distributed_messenger.domain.repositories.IBlockRepository
-import com.distributed_messenger.implementation.services.BlockService
+import com.distributed_messenger.data.local.irepositories.IBlockRepository
+import com.distributed_messenger.domain.services.BlockService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

@@ -1,8 +1,8 @@
 package com.distributed_messenger.test.unit.services
 
 import com.distributed_messenger.domain.models.File
-import com.distributed_messenger.domain.repositories.IFileRepository
-import com.distributed_messenger.implementation.services.FileService
+import com.distributed_messenger.data.local.irepositories.IFileRepository
+import com.distributed_messenger.domain.services.FileService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

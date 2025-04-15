@@ -1,6 +1,6 @@
 package com.distributed_messenger.domain.controllers
 
-import com.distributed_messenger.domain.services.IMessageService
+import com.distributed_messenger.domain.iservices.IMessageService
 import java.util.UUID
 
 class MessageController(private val messageService: IMessageService) {
