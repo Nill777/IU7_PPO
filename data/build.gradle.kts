@@ -1,22 +1,18 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp) // Добавлен плагин KSP для Room
+    alias(libs.plugins.android.library)  // Android-библиотека
+    alias(libs.plugins.kotlin.android)    // Kotlin для Android (включает JVM-функциональность)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.distributed_messenger"
+    namespace = "com.distributed_messenger.data"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.distributed_messenger"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
@@ -36,25 +32,14 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-    buildFeatures {
-        compose = true
-    }
 
-    // Для тестов с корутинами
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-            all {
-                it.useJUnitPlatform()
-            }
-        }
+    kotlinOptions {
+        jvmTarget = "11" // Указываем JVM-таргет здесь
     }
 }
 
@@ -64,39 +49,28 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":data"))
+    implementation(project(":core"))
     implementation(project(":domain"))
-    implementation(project(":presenter"))
-    implementation(project(":ui"))
-    // Базовые зависимости
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
 
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    implementation(libs.core.ktx)
     ksp(libs.androidx.room.compiler)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-    // Navigation
-     implementation(libs.androidx.navigation.compose)
+    // AndroidX
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Unit тесты
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.androidx.core.testing)
-    testImplementation(libs.kotlin.test)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
     // Android тесты
     androidTestImplementation(libs.androidx.junit)
@@ -107,8 +81,4 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.test.core.ktx)
-
-    // Debug
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }

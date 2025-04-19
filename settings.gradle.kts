@@ -21,3 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "Distributed_messenger"
 include(":app")
+include(":core")
+include(":data")
+include(":domain")
+include(":presenter")
+include(":ui")
