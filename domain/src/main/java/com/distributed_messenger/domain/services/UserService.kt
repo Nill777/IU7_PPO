@@ -37,6 +37,12 @@ class UserService(private val userRepository: IUserRepository) : IUserService {
         return userRepository.updateUser(updatedUser)
     }
 
+    override suspend fun updateUserRole(id: UUID, newRole: UserRole): Boolean {
+        val user = userRepository.getUser(id) ?: return false
+        val updatedUser = user.copy(id = id, role = newRole)
+        return userRepository.updateUser(updatedUser)
+    }
+
     override suspend fun deleteUser(id: UUID): Boolean {
         return userRepository.deleteUser(id)
     }

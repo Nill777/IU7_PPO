@@ -1,22 +1,28 @@
 package com.distributed_messenger.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.distributed_messenger.core.User
+import com.distributed_messenger.core.UserRole
+import com.distributed_messenger.presenter.viewmodels.AdminViewModel
+import com.distributed_messenger.presenter.viewmodels.ProfileViewModel
 import com.distributed_messenger.ui.NavigationController
 import java.util.UUID
 
 @Composable
-fun ProfileScreen(navigationController: NavigationController) {
+fun ProfileScreen(viewModel: ProfileViewModel,
+                  navigationController: NavigationController) {
+    val currentUser by viewModel.user.collectAsState()
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCurrentUser() // Загружаем текущего пользователя при первом запуске
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -28,5 +34,24 @@ fun ProfileScreen(navigationController: NavigationController) {
             text = "Профиль",
             style = MaterialTheme.typography.headlineMedium
         )
+
+        when (state) {
+            is ProfileViewModel.ProfileState.Loading -> CircularProgressIndicator() // Показать индикатор загрузки
+            is ProfileViewModel.ProfileState.Error -> Text(
+                text = (state as ProfileViewModel.ProfileState.Error).message,
+                color = MaterialTheme.colorScheme.error // Показать сообщение об ошибке
+            )
+            else -> {
+                if (currentUser?.role == UserRole.ADMINISTRATOR) {
+                    Button(
+                        onClick = { navigationController.navigateToAdminDashboard() }
+                    ) {
+                        Text("Админ-панель")
+                    }
+                }
+                // Здесь можно добавить другие элементы интерфейса для отображения информации о пользователе
+            }
+        }
     }
 }
+

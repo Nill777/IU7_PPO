@@ -6,8 +6,7 @@ import com.distributed_messenger.data.local.dao.FileDao
 import com.distributed_messenger.data.local.entities.FileEntity
 import java.util.UUID
 
-class FileRepository(private val fileDao: FileDao) :
-    com.distributed_messenger.domain.irepositories.IFileRepository {
+class FileRepository(private val fileDao: FileDao) : IFileRepository {
     override suspend fun getFile(id: UUID): File? {
         return fileDao.getFileById(id)?.toDomain()
     }

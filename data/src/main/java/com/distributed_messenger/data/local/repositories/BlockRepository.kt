@@ -6,8 +6,7 @@ import com.distributed_messenger.data.local.dao.BlockDao
 import com.distributed_messenger.data.local.entities.BlockEntity
 import java.util.UUID
 
-class BlockRepository(private val blockDao: BlockDao) :
-    com.distributed_messenger.domain.irepositories.IBlockRepository {
+class BlockRepository(private val blockDao: BlockDao) : IBlockRepository {
     override suspend fun getBlock(id: UUID): Block? {
         return blockDao.getBlockById(id)?.toDomain()
     }
@@ -34,6 +33,10 @@ class BlockRepository(private val blockDao: BlockDao) :
 
     override suspend fun deleteBlock(id: UUID): Boolean {
         return blockDao.deleteBlock(id) > 0
+    }
+
+    override suspend fun deleteBlocksByUserId(blockerId: UUID, blockedUserId: UUID): Boolean {
+        return blockDao.deleteBlocksByUserId(blockerId, blockedUserId) > 0
     }
 
     private fun Block.toEntity(): BlockEntity {

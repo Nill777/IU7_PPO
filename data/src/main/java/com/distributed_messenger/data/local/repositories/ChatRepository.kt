@@ -6,8 +6,7 @@ import com.distributed_messenger.data.local.dao.ChatDao
 import com.distributed_messenger.data.local.entities.ChatEntity
 import java.util.UUID
 
-class ChatRepository(private val chatDao: ChatDao) :
-    com.distributed_messenger.domain.irepositories.IChatRepository {
+class ChatRepository(private val chatDao: ChatDao) : IChatRepository {
     override suspend fun getChat(id: UUID): Chat? {
         return chatDao.getChatById(id)?.toDomain()
     }

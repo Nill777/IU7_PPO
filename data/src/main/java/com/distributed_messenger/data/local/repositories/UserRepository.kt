@@ -6,8 +6,7 @@ import com.distributed_messenger.data.local.dao.UserDao
 import com.distributed_messenger.data.local.entities.UserEntity
 import java.util.UUID
 
-class UserRepository(private val userDao: UserDao) :
-    com.distributed_messenger.domain.irepositories.IUserRepository {
+class UserRepository(private val userDao: UserDao) : IUserRepository {
     override suspend fun getUser(id: UUID): User? {
         return userDao.getUserById(id)?.toDomain()
     }

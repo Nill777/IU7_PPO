@@ -37,7 +37,7 @@ fun AuthScreen(
 
         // Кнопки действий
         Button(
-            onClick = { viewModel.register(username, UserRole.USER) },
+            onClick = { viewModel.register(username, UserRole.ADMINISTRATOR) },
             enabled = authState !is AuthState.Loading
         ) {
             Text("Register")
@@ -61,7 +61,8 @@ fun AuthScreen(
             }
             is AuthState.LoginSuccess -> {
                 LaunchedEffect(Unit) {
-                    navigationController.navigateToHome()
+//                    navigationController.navigateToHome()
+                    navigationController.navigateToProfile()
                 }
             }
             is AuthState.Error -> {

@@ -28,4 +28,7 @@ interface BlockDao {
     // @Delete
     @Query("DELETE FROM blocked_users WHERE block_id = :id")
     suspend fun deleteBlock(id: UUID): Int
+
+    @Query("DELETE FROM blocked_users WHERE blocker_id = :blockerId AND blocked_user_id = :blockedUserId")
+    suspend fun deleteBlocksByUserId(blockerId: UUID, blockedUserId: UUID): Int
 }

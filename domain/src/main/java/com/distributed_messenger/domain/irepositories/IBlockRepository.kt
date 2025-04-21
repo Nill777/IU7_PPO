@@ -10,4 +10,5 @@ interface IBlockRepository {
     suspend fun addBlock(block: Block): UUID
     suspend fun updateBlock(block: Block): Boolean
     suspend fun deleteBlock(id: UUID): Boolean
+    suspend fun deleteBlocksByUserId(blockerId: UUID, blockedUserId: UUID): Boolean
 }

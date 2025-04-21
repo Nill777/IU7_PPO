@@ -13,6 +13,8 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
     // Состояния UI
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
+    // Хранение текущего пользователя
+    private lateinit var currentUserId: UUID
 
     // Регистрация пользователя
     fun register(username: String, role: UserRole) {
@@ -25,6 +27,7 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
             _authState.value = AuthState.Loading
             try {
                 val userId = iUserService.register(username, role)
+                currentUserId = userId // Сохраняем текущего пользователя
                 _authState.value = AuthState.RegistrationSuccess(userId)
             } catch (e: Exception) {
                 _authState.value = AuthState.Error(e.message ?: "Registration failed")
@@ -43,7 +46,9 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
             _authState.value = AuthState.Loading
             try {
                 val userId = iUserService.login(username)
+//                println("[DEBUG] Service response: userId=$userId $username")
                 userId?.let {
+                    currentUserId = userId // Сохраняем текущего пользователя
                     _authState.value = AuthState.LoginSuccess(it)
                 } ?: run {
                     _authState.value = AuthState.Error("User not found")
@@ -52,6 +57,11 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
                 _authState.value = AuthState.Error(e.message ?: "Login failed")
             }
         }
+    }
+
+    // Получение текущего пользователя
+    fun getCurrentUserId(): UUID {
+        return currentUserId
     }
 
     // Сброс состояния

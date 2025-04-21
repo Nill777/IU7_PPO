@@ -6,8 +6,7 @@ import com.distributed_messenger.data.local.dao.MessageDao
 import com.distributed_messenger.data.local.entities.MessageEntity
 import java.util.UUID
 
-class MessageRepository(private val messageDao: MessageDao) :
-    com.distributed_messenger.domain.irepositories.IMessageRepository {
+class MessageRepository(private val messageDao: MessageDao) : IMessageRepository {
     override suspend fun getMessage(id: UUID): Message? {
         return messageDao.getMessageById(id)?.toDomain()
     }

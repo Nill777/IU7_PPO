@@ -10,5 +10,6 @@ interface IUserService {
     suspend fun getUser(id: UUID): User?
     suspend fun getAllUsers(): List<User>
     suspend fun updateUser(id: UUID, username: String): Boolean
+    suspend fun updateUserRole(id: UUID, newRole: UserRole): Boolean
     suspend fun deleteUser(id: UUID): Boolean
 }

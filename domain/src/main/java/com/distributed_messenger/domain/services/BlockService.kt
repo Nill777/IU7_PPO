@@ -26,7 +26,11 @@ class BlockService(private val blockRepository: IBlockRepository) : IBlockServic
         return blockRepository.getBlocksByUser(userId)
     }
 
-    override suspend fun unblockUser(id: UUID): Boolean {
+    override suspend fun deleteBlock(id: UUID): Boolean {
         return blockRepository.deleteBlock(id)
+    }
+
+    override suspend fun unblockUser(blockerId: UUID, blockedUserId: UUID): Boolean {
+        return blockRepository.deleteBlocksByUserId(blockerId, blockedUserId)
     }
 }
