@@ -22,6 +22,8 @@ androidxTestExt = "1.1.5"
 coreKtxVersion = "1.6.1"
 jetbrainsKotlinJvm = "2.1.10"
 junitJupiter = "5.8.1"
+kotlinLogging = "3.0.5"
+logback = "1.4.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,6 +66,9 @@ core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxV
 # Navigation
 androidx-navigation-compose = {group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation"}
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+
+# Logging
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

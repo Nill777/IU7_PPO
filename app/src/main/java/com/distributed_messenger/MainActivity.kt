@@ -13,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.distributed_messenger.core.logging.AppLogger
+import com.distributed_messenger.core.logging.Logger
 import com.distributed_messenger.data.local.AppDatabase
 import com.distributed_messenger.data.local.dao.AppSettingsDao
 import com.distributed_messenger.data.local.dao.BlockDao
@@ -71,8 +73,9 @@ class MainActivity : ComponentActivity() {
         UserRepository(userDao)
     }
     // 4. Создание UserService с UserRepository
+    private val applogger = AppLogger("app.log")
     private val userService: UserService by lazy {
-        UserService(userRepository)
+        UserService(userRepository, applogger)
     }
 
     // 5. Передача userService в AuthViewModel
