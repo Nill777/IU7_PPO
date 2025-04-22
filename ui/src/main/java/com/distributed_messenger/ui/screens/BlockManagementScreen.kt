@@ -13,13 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.distributed_messenger.presenter.viewmodels.AdminViewModel
 import com.distributed_messenger.ui.NavigationController
-import com.distributed_messenger.ui.components.UserListItem
+import com.distributed_messenger.ui.components.BlockItem
 
 @Composable
-fun BlockManagementScreen(
-    viewModel: AdminViewModel,
-    navigationController: NavigationController
-) {
+fun BlockManagementScreen(viewModel: AdminViewModel,
+                          navigationController: NavigationController) {
     val users by viewModel.users.collectAsState()
     val state by viewModel.state.collectAsState()
 
@@ -39,11 +37,10 @@ fun BlockManagementScreen(
 
         LazyColumn {
             items(users) { user ->
-                UserListItem(
+                BlockItem(
                     user = user,
                     onBlock = { viewModel.blockUser(user.id) },
-                    onUnblock = { viewModel.unblockUser(user.id) },
-                    onRoleChange = { /* Не используется здесь */ }
+                    onUnblock = { viewModel.unblockUser(user.id) }
                 )
             }
         }

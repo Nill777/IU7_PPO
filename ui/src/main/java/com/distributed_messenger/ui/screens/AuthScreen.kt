@@ -11,12 +11,9 @@ import com.distributed_messenger.presenter.viewmodels.AuthViewModel.AuthState
 import com.distributed_messenger.core.UserRole
 import com.distributed_messenger.ui.NavigationController
 
-// ui/screens/AuthScreen.kt
 @Composable
-fun AuthScreen(
-    viewModel: AuthViewModel,
-    navigationController: NavigationController
-) {
+fun AuthScreen(viewModel: AuthViewModel,
+               navigationController: NavigationController) {
     // Подписываемся на "статус" от ViewModel
     // collectAsState() превращает Flow в "живое состояние", которое автоматически обновляет UI
     val authState by viewModel.authState.collectAsState()
@@ -35,7 +32,6 @@ fun AuthScreen(
             label = { Text("Username") }
         )
 
-        // Кнопки действий
         Button(
             onClick = { viewModel.register(username, UserRole.ADMINISTRATOR) },
             enabled = authState !is AuthState.Loading
@@ -61,7 +57,7 @@ fun AuthScreen(
             }
             is AuthState.LoginSuccess -> {
                 LaunchedEffect(Unit) {
-//                    navigationController.navigateToHome()
+                    // navigationController.navigateToHome()
                     navigationController.navigateToProfile()
                 }
             }

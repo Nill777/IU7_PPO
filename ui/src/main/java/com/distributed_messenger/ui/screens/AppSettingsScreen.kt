@@ -12,10 +12,8 @@ import com.distributed_messenger.presenter.viewmodels.AppSettingsViewModel
 import com.distributed_messenger.ui.components.SettingItem
 
 @Composable
-fun AppSettingsScreen(
-    viewModel: AppSettingsViewModel,
-    navigationController: NavigationController
-) {
+fun AppSettingsScreen(viewModel: AppSettingsViewModel,
+                      navigationController: NavigationController) {
     val settings by viewModel.settingsState.collectAsState()
 
     LazyColumn {

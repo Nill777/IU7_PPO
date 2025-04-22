@@ -13,13 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.distributed_messenger.ui.components.UserListItem
+import com.distributed_messenger.ui.components.RoleItem
 
 @Composable
-fun AdminPanelScreen(
-    viewModel: AdminViewModel,
-    navigationController: NavigationController
-) {
+fun AdminPanelScreen(viewModel: AdminViewModel,
+                     navigationController: NavigationController) {
     val users by viewModel.users.collectAsState()
     val state by viewModel.state.collectAsState()
     LaunchedEffect(Unit) {
@@ -37,10 +35,8 @@ fun AdminPanelScreen(
 
         LazyColumn {
             items(users) { user ->
-                UserListItem(
+                RoleItem(
                     user = user,
-                    onBlock = { },
-                    onUnblock = { },
                     onRoleChange = { newRole ->
                         viewModel.updateUserRole(user.id, newRole)
                     }

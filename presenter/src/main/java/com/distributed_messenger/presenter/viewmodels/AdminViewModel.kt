@@ -51,18 +51,6 @@ class AdminViewModel(private val authViewModel: AuthViewModel,
             }
         }
     }
-//    fun blockUser(blockedUserId: UUID, reason: String? = null) {
-//        viewModelScope.launch {
-//            _state.value = AdminState.Loading
-//            try {
-//                val blockerId = authViewModel.getCurrentUserId()
-//                val blockId = blockService.blockUser(blockerId, blockedUserId, reason)
-//                _state.value = AdminState.Success("User blocked successfully")
-//            } catch (e: Exception) {
-//                _state.value = AdminState.Error(e.message ?: "Failed to block user")
-//            }
-//        }
-//    }
 
     fun blockUser(userId: UUID, reason: String? = null) {
         viewModelScope.launch {
@@ -79,21 +67,7 @@ class AdminViewModel(private val authViewModel: AuthViewModel,
             }
         }
     }
-//    fun unblockUser(blockId: UUID) {
-//        viewModelScope.launch {
-//            _state.value = AdminState.Loading
-//            try {
-//                val success = blockService.unblockUser(blockId)
-//                if (success) {
-//                    _state.value = AdminState.Success("User unblocked successfully")
-//                } else {
-//                    _state.value = AdminState.Error("Failed to unblock user")
-//                }
-//            } catch (e: Exception) {
-//                _state.value = AdminState.Error(e.message ?: "Failed to unblock user")
-//            }
-//        }
-//    }
+
     fun unblockUser(blockedUserId: UUID) {
         viewModelScope.launch {
             _state.value = AdminState.Loading
@@ -102,10 +76,10 @@ class AdminViewModel(private val authViewModel: AuthViewModel,
                 val success = blockService.unblockUser(currentUserId, blockedUserId)
                 if (success) {
                     // Обновляем список пользователей
-                    loadUsers()
-                    // _users.value = _users.value.map { user ->
-                    //    if (user.id == userId) user.copy(blockedUsersId = currentUserId) else user
-                    // }
+//                    loadUsers()
+                     _users.value = _users.value.map { user ->
+                        if (user.id == blockedUserId) user.copy(blockedUsersId = null) else user
+                     }
                     _state.value = AdminState.Success("User unblocked")
                 }
             } catch (e: Exception) {

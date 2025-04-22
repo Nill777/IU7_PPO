@@ -11,11 +11,9 @@ import androidx.compose.ui.unit.dp
 import com.distributed_messenger.core.AppSettingType
 
 @Composable
-fun SettingItem(
-    type: AppSettingType,
-    currentValue: Int,
-    onValueChange: (Int) -> Unit
-) {
+fun SettingItem(type: AppSettingType,
+                currentValue: Int,
+                onValueChange: (Int) -> Unit) {
     var showMenu by remember { mutableStateOf(false) }
 
     Row(

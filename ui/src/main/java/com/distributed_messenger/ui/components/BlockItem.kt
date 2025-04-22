@@ -16,14 +16,9 @@ import com.distributed_messenger.core.User
 import com.distributed_messenger.core.UserRole
 
 @Composable
-fun UserListItem(
-    user: User,
-    onRoleChange: (UserRole) -> Unit,
-    onBlock: () -> Unit,
-    onUnblock: () -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
+fun BlockItem(user: User,
+              onBlock: () -> Unit,
+              onUnblock: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,33 +27,6 @@ fun UserListItem(
     ) {
         Text(user.username)
 
-//        Button(onClick = onBlock) {
-//            Text("Заблокировать")
-//        }
-//
-//        Button(onClick = onUnblock) {
-//            Text("Разблокировать")
-//        }
-
-        Box {
-            Button(onClick = { expanded = true }) {
-                Text(user.role.name)
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                UserRole.entries.forEach { role ->
-                    DropdownMenuItem(
-                        text = { Text(role.name) },
-                        onClick = {
-                            onRoleChange(role)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
         IconButton(onClick = {
             if (user.blockedUsersId != null) {
                 onUnblock() // Если пользователь заблокирован, разблокируем

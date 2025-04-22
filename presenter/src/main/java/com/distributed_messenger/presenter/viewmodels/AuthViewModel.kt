@@ -16,7 +16,6 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
     // Хранение текущего пользователя
     private lateinit var currentUserId: UUID
 
-    // Регистрация пользователя
     fun register(username: String, role: UserRole) {
         if (username.isBlank()) {
             _authState.value = AuthState.Error("Username cannot be empty")
@@ -35,7 +34,6 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
         }
     }
 
-    // Авторизация пользователя
     fun login(username: String) {
         if (username.isBlank()) {
             _authState.value = AuthState.Error("Username cannot be empty")
@@ -59,12 +57,10 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
         }
     }
 
-    // Получение текущего пользователя
     fun getCurrentUserId(): UUID {
         return currentUserId
     }
 
-    // Сброс состояния
     fun resetState() {
         _authState.value = AuthState.Idle
     }
