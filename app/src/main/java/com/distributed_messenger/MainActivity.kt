@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.distributed_messenger.core.logging.AppLogger
 import com.distributed_messenger.core.logging.Logger
 import com.distributed_messenger.data.local.AppDatabase
 import com.distributed_messenger.data.local.dao.AppSettingsDao
@@ -59,11 +58,12 @@ class MainActivity : ComponentActivity() {
         Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
-            "messenger-db"
+             Config.dbName
         ) // .addMigrations(MIGRATION_1_2)
         .fallbackToDestructiveMigration(dropAllTables = true) // Удаляет данные при изменении схемы
         .build()
     }
+
     // 2. Получение UserDao из базы данных
     private val userDao: UserDao by lazy {
         appDatabase.userDao()
@@ -73,9 +73,9 @@ class MainActivity : ComponentActivity() {
         UserRepository(userDao)
     }
     // 4. Создание UserService с UserRepository
-    private val applogger = AppLogger("app.log")
+//    private val uslogger = Logger("app.log")
     private val userService: UserService by lazy {
-        UserService(userRepository, applogger)
+        UserService(userRepository)
     }
 
     // 5. Передача userService в AuthViewModel
@@ -144,6 +144,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Инициализация конфига перед использованием
+        Config.initialize(applicationContext)
+        Logger.initialize(applicationContext)
+
         setContent {
             // remember гарантирует, что объект не пересоздаётся при рекомпозициях.
             navController = rememberNavController()

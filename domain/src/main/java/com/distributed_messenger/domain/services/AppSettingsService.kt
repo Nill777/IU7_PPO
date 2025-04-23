@@ -1,25 +1,36 @@
 package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.core.AppSettingType
+import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.core.logging.LoggingWrapper
 import com.distributed_messenger.domain.irepositories.IAppSettingsRepository
 import com.distributed_messenger.domain.iservices.IAppSettingsService
 
-class AppSettingsService(
-    private val repository: IAppSettingsRepository
+class AppSettingsService(private val repository: IAppSettingsRepository
 ) : IAppSettingsService {
-    override suspend fun loadSettings(): List<Pair<AppSettingType, Int>> {
-        return repository.getAllSettings()
-    }
+    private val loggingWrapper = LoggingWrapper(
+        origin = this,
+        logger = Logger,
+        tag = "AppSettingsService"
+    )
 
-    override suspend fun updateSetting(type: AppSettingType, value: Int): Boolean {
-        return repository.updateSetting(type, value)
-    }
+    override suspend fun loadSettings(): List<Pair<AppSettingType, Int>> =
+        loggingWrapper {
+            repository.getAllSettings()
+        }
 
-    override suspend fun initializeDefaultSettings() {
-        repository.initializeDefaultSettings()
-    }
+    override suspend fun updateSetting(type: AppSettingType, value: Int): Boolean =
+        loggingWrapper {
+            repository.updateSetting(type, value)
+        }
 
-    override suspend fun addCustomSetting(name: String, defaultValue: Int) {
-        repository.addCustomSetting(name, defaultValue)
-    }
+    override suspend fun initializeDefaultSettings() =
+        loggingWrapper {
+            repository.initializeDefaultSettings()
+        }
+
+    override suspend fun addCustomSetting(name: String, defaultValue: Int) =
+        loggingWrapper {
+            repository.addCustomSetting(name, defaultValue)
+        }
 }

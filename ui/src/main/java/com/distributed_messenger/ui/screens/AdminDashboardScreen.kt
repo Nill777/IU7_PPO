@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.distributed_messenger.core.logging.Logger
 import com.distributed_messenger.presenter.viewmodels.AdminViewModel
 import com.distributed_messenger.ui.NavigationController
 
@@ -21,7 +22,10 @@ fun AdminDashboardScreen(viewModel: AdminViewModel,
                          navigationController: NavigationController) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Button(
-            onClick = { navigationController.navigateToUserManagement() },
+            onClick = {
+                Logger.log("AdminDashboard", "Navigation: User Management")
+                navigationController.navigateToUserManagement()
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RectangleShape,
             colors = ButtonDefaults.buttonColors(
@@ -38,7 +42,10 @@ fun AdminDashboardScreen(viewModel: AdminViewModel,
         }
 
         Button(
-            onClick = { navigationController.navigateToBlockManagement() },
+            onClick = {
+                Logger.log("AdminDashboard", "Navigation: Block Management")
+                navigationController.navigateToBlockManagement()
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RectangleShape,
             colors = ButtonDefaults.buttonColors(
@@ -55,7 +62,10 @@ fun AdminDashboardScreen(viewModel: AdminViewModel,
         }
 
         Button(
-            onClick = { navigationController.navigateToAppSettings() },
+            onClick = {
+                Logger.log("AdminDashboard", "Navigation: App Settings")
+                navigationController.navigateToAppSettings()
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RectangleShape,
             colors = ButtonDefaults.buttonColors(

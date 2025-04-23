@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <logging file="app_debug.log"/>
+    <database name="messenger_db" version="2"/>
+</config>

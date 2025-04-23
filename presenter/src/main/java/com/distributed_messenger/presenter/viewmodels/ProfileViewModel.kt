@@ -3,6 +3,8 @@ package com.distributed_messenger.presenter.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.distributed_messenger.core.User
+import com.distributed_messenger.core.logging.LogLevel
+import com.distributed_messenger.core.logging.Logger
 import com.distributed_messenger.domain.iservices.IUserService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,10 +22,7 @@ class ProfileViewModel(private val userService: IUserService,
     // Функция для получения текущего пользователя
     fun loadCurrentUser() {
         val userId = authViewModel.getCurrentUserId()
-//        if (userId == null) {
-//            _state.value = ProfileState.Error("User is not logged in")
-//            return
-//        }
+        Logger.log("ProfileViewModel", "Loading current user with ID: $userId")
 
         viewModelScope.launch {
             _state.value = ProfileState.Loading
@@ -31,7 +30,9 @@ class ProfileViewModel(private val userService: IUserService,
                 val fetchedUser = userService.getUser(userId)
                 _user.value = fetchedUser
                 _state.value = ProfileState.Idle
+                Logger.log("ProfileViewModel", "User loaded successfully: ${fetchedUser!!.id}")
             } catch (e: Exception) {
+                Logger.log("ProfileViewModel", "Error loading user: ${e.message}", LogLevel.ERROR, e)
                 _state.value = ProfileState.Error(e.message ?: "Failed to load user")
             }
         }

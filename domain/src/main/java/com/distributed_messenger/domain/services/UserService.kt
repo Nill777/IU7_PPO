@@ -2,18 +2,23 @@ package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.core.User
 import com.distributed_messenger.core.UserRole
-import com.distributed_messenger.core.logging.LogLevel
+import com.distributed_messenger.core.logging.ILogger
 import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.core.logging.LoggingWrapper
 import com.distributed_messenger.domain.iservices.IUserService
 import com.distributed_messenger.domain.irepositories.IUserRepository
 import java.util.UUID
 
-class UserService(private val userRepository: IUserRepository,
-                  private val logger: Logger
-) : IUserService {
-    override suspend fun register(username: String, role: UserRole): UUID {
-        logger.log("UserService", "Registering user: $username", LogLevel.INFO)
-        return try {
+class UserService(private val userRepository: IUserRepository) : IUserService {
+    // Создаём LoggingWrapper для текущего сервиса
+    private val loggingWrapper = LoggingWrapper(
+        origin = this,
+        logger = Logger,
+        tag = "UserService"
+    )
+
+    override suspend fun register(username: String, role: UserRole): UUID =
+        loggingWrapper {
             val user = User(
                 id = UUID.randomUUID(),
                 username = username,
@@ -22,14 +27,8 @@ class UserService(private val userRepository: IUserRepository,
                 profileSettingsId = UUID.randomUUID(),
                 appSettingsId = UUID.randomUUID()
             )
-            val userId = userRepository.addUser(user)
-            logger.log("UserService", "User registered: $userId", LogLevel.INFO)
-            userId
-        } catch (e: Exception) {
-            logger.log("UserService", "Registration failed: ${e.message}", LogLevel.ERROR, e)
-            throw e
+            userRepository.addUser(user)
         }
-    }
 //    override suspend fun register(username: String, role: UserRole): UUID {
 //        val user = User(
 //            id = UUID.randomUUID(),
@@ -42,31 +41,38 @@ class UserService(private val userRepository: IUserRepository,
 //        return userRepository.addUser(user)
 //    }
 
-    override suspend fun login(username: String): UUID? {
-        return userRepository.findByUsername(username)?.id
-    }
+    override suspend fun login(username: String): UUID? =
+        loggingWrapper {
+            userRepository.findByUsername(username)?.id
+        }
 
-    override suspend fun getUser(id: UUID): User? {
-        return userRepository.getUser(id)
-    }
+    override suspend fun getUser(id: UUID): User? =
+        loggingWrapper {
+            userRepository.getUser(id)
+        }
 
-    override suspend fun getAllUsers(): List<User> {
-        return userRepository.getAllUsers()
-    }
+    override suspend fun getAllUsers(): List<User> =
+        loggingWrapper {
+            userRepository.getAllUsers()
+        }
 
-    override suspend fun updateUser(id: UUID, username: String): Boolean {
-        val user = userRepository.getUser(id) ?: return false
-        val updatedUser = user.copy(id = id, username = username)
-        return userRepository.updateUser(updatedUser)
-    }
+    override suspend fun updateUser(id: UUID, username: String): Boolean =
+        loggingWrapper {
+            // return@label используется для явного указания, из какого контекста или лямбда-выражения
+            val user = userRepository.getUser(id) ?: return@loggingWrapper false
+            val updatedUser = user.copy(id = id, username = username)
+            userRepository.updateUser(updatedUser)
+        }
 
-    override suspend fun updateUserRole(id: UUID, newRole: UserRole): Boolean {
-        val user = userRepository.getUser(id) ?: return false
-        val updatedUser = user.copy(id = id, role = newRole)
-        return userRepository.updateUser(updatedUser)
-    }
+    override suspend fun updateUserRole(id: UUID, newRole: UserRole): Boolean =
+        loggingWrapper {
+            val user = userRepository.getUser(id) ?: return@loggingWrapper false
+            val updatedUser = user.copy(id = id, role = newRole)
+            userRepository.updateUser(updatedUser)
+        }
 
-    override suspend fun deleteUser(id: UUID): Boolean {
-        return userRepository.deleteUser(id)
-    }
+    override suspend fun deleteUser(id: UUID): Boolean =
+        loggingWrapper {
+            userRepository.deleteUser(id)
+        }
 }

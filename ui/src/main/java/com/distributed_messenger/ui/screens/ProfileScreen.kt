@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.distributed_messenger.core.User
 import com.distributed_messenger.core.UserRole
+import com.distributed_messenger.core.logging.LogLevel
+import com.distributed_messenger.core.logging.Logger
 import com.distributed_messenger.presenter.viewmodels.AdminViewModel
 import com.distributed_messenger.presenter.viewmodels.ProfileViewModel
 import com.distributed_messenger.ui.NavigationController
@@ -18,33 +20,42 @@ fun ProfileScreen(viewModel: ProfileViewModel,
                   navigationController: NavigationController) {
     val currentUser by viewModel.user.collectAsState()
     val state by viewModel.state.collectAsState()
-
+    
     LaunchedEffect(Unit) {
+        Logger.log("ProfileScreen", "Initial user load started")
         viewModel.loadCurrentUser() // Загружаем текущего пользователя при первом запуске
     }
-
+    
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    modifier = Modifier
+    .fillMaxSize()
+    .padding(32.dp),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Профиль",
             style = MaterialTheme.typography.headlineMedium
         )
-
+    
         when (state) {
-            is ProfileViewModel.ProfileState.Loading -> CircularProgressIndicator() // Показать индикатор загрузки
-            is ProfileViewModel.ProfileState.Error -> Text(
-                text = (state as ProfileViewModel.ProfileState.Error).message,
-                color = MaterialTheme.colorScheme.error // Показать сообщение об ошибке
-            )
+            is ProfileViewModel.ProfileState.Loading -> {
+                Logger.log("ProfileScreen", "Loading state active")
+                CircularProgressIndicator() // Показать индикатор загрузки
+            }
+            is ProfileViewModel.ProfileState.Error -> {
+                val errorMsg = (state as ProfileViewModel.ProfileState.Error).message
+                Logger.log("ProfileScreen", "Error: $errorMsg", LogLevel.ERROR)
+                Text(text = errorMsg, color = MaterialTheme.colorScheme.error)
+            }
             else -> {
+                Logger.log("ProfileScreen", "User data loaded: ${currentUser?.id}")
                 if (currentUser?.role == UserRole.ADMINISTRATOR) {
                     Button(
-                        onClick = { navigationController.navigateToAdminDashboard() }
+                        onClick = {
+                            Logger.log("ProfileScreen", "Navigating to admin dashboard")
+                            navigationController.navigateToAdminDashboard()
+                        }
                     ) {
                         Text("Админ-панель")
                     }
@@ -53,4 +64,3 @@ fun ProfileScreen(viewModel: ProfileViewModel,
         }
     }
 }
-
