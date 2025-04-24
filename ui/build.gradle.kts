@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":logger"))
     // Зависимость на presenter (для NavigationController и AuthViewModel)
     implementation(project(":core"))
     implementation(project(":presenter"))

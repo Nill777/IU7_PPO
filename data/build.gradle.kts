@@ -49,6 +49,7 @@ ksp {
 }
 
 dependencies {
+    implementation(project(":logger"))
     implementation(project(":core"))
     implementation(project(":domain"))
 

@@ -38,8 +38,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
+    implementation(project(":logger"))
     implementation(project(":core"))
+    implementation(project(":domain"))
 
     // AndroidX Lifecycle и ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

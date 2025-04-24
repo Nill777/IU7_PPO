@@ -7,7 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.presenter.viewmodels.AuthViewModel
 import com.distributed_messenger.ui.NavigationController
 import java.util.UUID

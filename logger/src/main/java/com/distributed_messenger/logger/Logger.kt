@@ -1,4 +1,4 @@
-package com.distributed_messenger.core.logging
+package com.distributed_messenger.logger
 
 import java.io.File
 import java.time.LocalDateTime
@@ -17,14 +17,11 @@ enum class LogLevel { DEBUG, INFO, WARN, ERROR }
 object Logger : ILogger {
     private lateinit var logFile: File
 
-    fun initialize(appContext: Context, fileName: String = "application.log") {
-        context = appContext
-        logFile = File(context.filesDir, fileName)
-
-        if (!logFile.exists()) {
-            logFile.parentFile?.mkdirs()
-            logFile.createNewFile()
+    fun initialize(fileName: String?) {
+        if (fileName.isNullOrEmpty()) {
+            throw IllegalArgumentException("File name must not be null or empty")
         }
+        logFile = File(fileName)
     }
 
 //    override fun log(tag: String, message: String, level: LogLevel, throwable: Throwable?) {

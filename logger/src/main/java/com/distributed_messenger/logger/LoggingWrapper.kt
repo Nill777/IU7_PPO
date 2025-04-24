@@ -1,4 +1,4 @@
-package com.distributed_messenger.core.logging
+package com.distributed_messenger.logger
 
 //import kotlin.reflect.KFunction
 //import kotlin.reflect.jvm.javaMethod
@@ -33,7 +33,7 @@ class LoggingWrapper<T : Any>(
 //
 //        // Ищем первый элемент стека вне нашего класса
 //        for (element in stackTrace) {
-//            if (!element.className.startsWith("com.distributed_messenger.core.logging.LoggingWrapper")) {
+//            if (!element.className.startsWith("com.distributed_messenger.logger.LoggingWrapper")) {
 //                return element.methodName
 //                    .substringBefore("\$") // Убираем суффиксы для лямбд
 //                    .replace("invokeSuspend", "")
@@ -47,7 +47,7 @@ class LoggingWrapper<T : Any>(
         return stackTrace.asSequence()
             .filterNot {
                 // Исключаем классы логирования и Kotlin runtime
-                it.className.startsWith("com.distributed_messenger.core.logging") ||
+                it.className.startsWith("com.distributed_messenger.logger") ||
                         it.className.startsWith("kotlin.coroutines") ||
                         it.className.startsWith("kotlin.reflect")
             }

@@ -1,8 +1,8 @@
 package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.core.AppSettingType
-import com.distributed_messenger.core.logging.Logger
-import com.distributed_messenger.core.logging.LoggingWrapper
+import com.distributed_messenger.logger.Logger
+import com.distributed_messenger.logger.LoggingWrapper
 import com.distributed_messenger.domain.irepositories.IAppSettingsRepository
 import com.distributed_messenger.domain.iservices.IAppSettingsService
 

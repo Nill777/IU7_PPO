@@ -1,37 +1,37 @@
 package com.distributed_messenger.data.local.repositories
 
 import com.distributed_messenger.core.Block
-import com.distributed_messenger.core.logging.Logger
-import com.distributed_messenger.core.logging.LoggingWrapper
+import com.distributed_messenger.logger.Logger
+import com.distributed_messenger.logger.LoggingWrapper
 import com.distributed_messenger.domain.irepositories.IBlockRepository
 import com.distributed_messenger.data.local.dao.BlockDao
 import com.distributed_messenger.data.local.entities.BlockEntity
 import java.util.UUID
 
 class BlockRepository(private val blockDao: BlockDao) : IBlockRepository {
-    private val loggingWrapper = LoggingWrapper(
+    private val loggerWrapper = LoggingWrapper(
         origin = this,
         logger = Logger,
         tag = "BlockRepository"
     )
 
     override suspend fun getBlock(id: UUID): Block? =
-        loggingWrapper {
+        loggerWrapper {
             blockDao.getBlockById(id)?.toDomain()
         }
 
     override suspend fun getAllBlocks(): List<Block> =
-        loggingWrapper {
+        loggerWrapper {
             blockDao.getAllBlocks().map { it.toDomain() }
         }
 
     override suspend fun getBlocksByUser(userId: UUID): List<Block> =
-        loggingWrapper {
+        loggerWrapper {
             blockDao.getBlocksByUserId(userId).map { it.toDomain() }
         }
 
     override suspend fun addBlock(block: Block): UUID =
-        loggingWrapper {
+        loggerWrapper {
             val rowId = blockDao.insertBlock(block.toEntity())
             if (rowId == -1L) {
                 throw Exception("Failed to insert block")
@@ -40,17 +40,17 @@ class BlockRepository(private val blockDao: BlockDao) : IBlockRepository {
         }
 
     override suspend fun updateBlock(block: Block): Boolean =
-        loggingWrapper {
+        loggerWrapper {
             blockDao.updateBlock(block.toEntity()) > 0
         }
 
     override suspend fun deleteBlock(id: UUID): Boolean =
-        loggingWrapper {
+        loggerWrapper {
             blockDao.deleteBlock(id) > 0
         }
 
     override suspend fun deleteBlocksByUserId(blockerId: UUID, blockedUserId: UUID): Boolean =
-        loggingWrapper {
+        loggerWrapper {
             blockDao.deleteBlocksByUserId(blockerId, blockedUserId) > 0
         }
 

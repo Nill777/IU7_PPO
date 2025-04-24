@@ -2,9 +2,9 @@ package com.distributed_messenger.domain.services
 
 import com.distributed_messenger.core.User
 import com.distributed_messenger.core.UserRole
-import com.distributed_messenger.core.logging.ILogger
-import com.distributed_messenger.core.logging.Logger
-import com.distributed_messenger.core.logging.LoggingWrapper
+import com.distributed_messenger.logger.ILogger
+import com.distributed_messenger.logger.Logger
+import com.distributed_messenger.logger.LoggingWrapper
 import com.distributed_messenger.domain.iservices.IUserService
 import com.distributed_messenger.domain.irepositories.IUserRepository
 import java.util.UUID

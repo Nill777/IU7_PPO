@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.dp
 import com.distributed_messenger.presenter.viewmodels.AuthViewModel
 import com.distributed_messenger.presenter.viewmodels.AuthViewModel.AuthState
 import com.distributed_messenger.core.UserRole
-import com.distributed_messenger.core.logging.LogLevel
-import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.logger.LogLevel
+import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.ui.NavigationController
 
 @Composable

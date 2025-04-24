@@ -3,8 +3,8 @@ package com.distributed_messenger.presenter.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.distributed_messenger.core.AppSettingType
-import com.distributed_messenger.core.logging.LogLevel
-import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.logger.LogLevel
+import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.domain.iservices.IAppSettingsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

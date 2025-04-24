@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.presenter.viewmodels.AdminViewModel
 import com.distributed_messenger.ui.NavigationController
 

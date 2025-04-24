@@ -11,8 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.distributed_messenger.core.logging.LogLevel
-import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.logger.LogLevel
+import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.presenter.viewmodels.AdminViewModel
 import com.distributed_messenger.ui.NavigationController
 import com.distributed_messenger.ui.components.BlockItem

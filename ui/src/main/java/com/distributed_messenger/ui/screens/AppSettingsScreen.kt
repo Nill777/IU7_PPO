@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.presenter.viewmodels.AppSettingsViewModel
 import com.distributed_messenger.ui.components.SettingItem
 

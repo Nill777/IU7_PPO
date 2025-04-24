@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.distributed_messenger.core.logging.Logger
+import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.data.local.AppDatabase
 import com.distributed_messenger.data.local.dao.AppSettingsDao
 import com.distributed_messenger.data.local.dao.BlockDao
@@ -36,6 +36,7 @@ import com.distributed_messenger.ui.screens.AuthScreen
 import com.distributed_messenger.ui.screens.BlockManagementScreen
 import com.distributed_messenger.ui.screens.MainScreen
 import com.distributed_messenger.ui.screens.ProfileScreen
+import java.io.File
 
 //val MIGRATION_1_2 = object : Migration(1, 2) {
 //    override fun migrate(db: SupportSQLiteDatabase) {
@@ -146,7 +147,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // Инициализация конфига перед использованием
         Config.initialize(applicationContext)
-        Logger.initialize(applicationContext)
+        val logFilePath = File(applicationContext.getExternalFilesDir(null), Config.logFileName).absolutePath
+        Logger.initialize(logFilePath)
 
         setContent {
             // remember гарантирует, что объект не пересоздаётся при рекомпозициях.
