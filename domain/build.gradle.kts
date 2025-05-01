@@ -1,20 +1,33 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")  // Чистая Kotlin/JVM-библиотека
+    alias(libs.plugins.android.library)  // Android-библиотека
+    alias(libs.plugins.kotlin.android)    // Kotlin для Android (включает JVM-функциональность)
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
+android {
+    namespace = "com.distributed_messenger.data"
+    compileSdk = 35
 
-kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+    defaultConfig {
+        minSdk = 26
+        targetSdk = 35
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-}
-// важно для unit тестов
-tasks.test {
-    useJUnitPlatform()
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+    // Для тестов с корутинами
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            all {
+                it.useJUnitPlatform()
+            }
+        }
+    }
 }
 
 dependencies {

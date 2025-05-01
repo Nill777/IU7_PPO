@@ -1,8 +1,5 @@
 package com.distributed_messenger.logger
 
-//import kotlin.reflect.KFunction
-//import kotlin.reflect.jvm.javaMethod
-
 class LoggingWrapper<T : Any>(
     val origin: T,
     val logger: ILogger,
@@ -25,22 +22,6 @@ class LoggingWrapper<T : Any>(
         }
     }
 
-//    fun <R> getMethodName(block: suspend T.() -> R): String {
-//        return (block as? KFunction<*>)?.javaMethod?.name ?: "unknown_method"
-//    }
-//    fun <R> getMethodName(block: suspend T.() -> R): String {
-//        val stackTrace = Throwable().stackTrace
-//
-//        // Ищем первый элемент стека вне нашего класса
-//        for (element in stackTrace) {
-//            if (!element.className.startsWith("com.distributed_messenger.logger.LoggingWrapper")) {
-//                return element.methodName
-//                    .substringBefore("\$") // Убираем суффиксы для лямбд
-//                    .replace("invokeSuspend", "")
-//            }
-//        }
-//        return "unknown_method"
-//    }
     fun <R> getMethodName(block: suspend T.() -> R): String {
         val stackTrace = Throwable().stackTrace
 

@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.distributed_messenger"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -45,6 +45,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    packaging {
+        resources.pickFirsts.add("META-INF/DEPENDENCIES")
     }
 
     // Для тестов с корутинами

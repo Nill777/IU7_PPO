@@ -5,7 +5,7 @@ import android.content.res.XmlResourceParser
 import org.xmlpull.v1.XmlPullParser
 
 object Config {
-    lateinit var logFileName: String
+    lateinit var logDir: String
     lateinit var dbName: String
     var dbVersion: Int = 1
 
@@ -14,7 +14,7 @@ object Config {
             while (parser.eventType != XmlResourceParser.END_DOCUMENT) {
                 if (parser.eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
-                        "logging" -> logFileName = parser.getAttributeValue(null, "file")
+                        "logdir" -> logDir = parser.getAttributeValue(null, "dir")
                         "database" -> {
                             dbName = parser.getAttributeValue(null, "name")
                             dbVersion = parser.getAttributeValue(null, "version")?.toIntOrNull() ?: 1

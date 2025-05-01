@@ -1,7 +1,11 @@
 package com.distributed_messenger.logger
 
+import timber.log.Timber
 import java.io.File
-import java.time.LocalDateTime
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 interface ILogger {
     fun log(
@@ -15,30 +19,26 @@ interface ILogger {
 enum class LogLevel { DEBUG, INFO, WARN, ERROR }
 
 object Logger : ILogger {
-    private lateinit var logFile: File
 
-    fun initialize(fileName: String?) {
-        if (fileName.isNullOrEmpty()) {
-            throw IllegalArgumentException("File name must not be null or empty")
+    fun initialize(logDirPath: String) {
+        val logFile = File(logDirPath, "app_${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}.log")
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile()
+            } catch (e: IOException) {
+                throw RuntimeException("Failed to create log file", e)
+            }
         }
-        logFile = File(fileName)
+        Timber.plant(CustomFormattingTree(logFile))
     }
 
-//    override fun log(tag: String, message: String, level: LogLevel, throwable: Throwable?) {
-//        val time = LocalDateTime.now().toString()
-//        val logMessage = "[$time] [${level.name}] $tag: $message ${throwable?.message ?: ""}"
-//        logFile.appendText("$logMessage\n")
-//        println(logMessage)
-//    }
     override fun log(tag: String, message: String, level: LogLevel, throwable: Throwable?) {
-        try {
-            val time = LocalDateTime.now().toString()
-            val logMessage = "[$time] [${level.name}] $tag: $message ${throwable?.message ?: ""}"
-            logFile.appendText("$logMessage\n")
-            println(logMessage)
-        } catch (e: Exception) {
-            System.err.println("Logging failed: ${e.message}")
-            e.printStackTrace()
+        val formattedMessage = "$tag - $message"
+        when (level) {
+            LogLevel.DEBUG -> Timber.tag(tag).d(throwable, formattedMessage)
+            LogLevel.INFO -> Timber.tag(tag).i(throwable, formattedMessage)
+            LogLevel.WARN -> Timber.tag(tag).w(throwable, formattedMessage)
+            LogLevel.ERROR -> Timber.tag(tag).e(throwable, formattedMessage)
         }
     }
 }

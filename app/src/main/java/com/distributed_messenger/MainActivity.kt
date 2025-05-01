@@ -37,6 +37,9 @@ import com.distributed_messenger.ui.screens.BlockManagementScreen
 import com.distributed_messenger.ui.screens.MainScreen
 import com.distributed_messenger.ui.screens.ProfileScreen
 import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 
 //val MIGRATION_1_2 = object : Migration(1, 2) {
 //    override fun migrate(db: SupportSQLiteDatabase) {
@@ -147,8 +150,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // Инициализация конфига перед использованием
         Config.initialize(applicationContext)
-        val logFilePath = File(applicationContext.getExternalFilesDir(null), Config.logFileName).absolutePath
-        Logger.initialize(logFilePath)
+
+        val dir = File(applicationContext.getExternalFilesDir(null), Config.logDir).apply { mkdirs() }
+        Logger.initialize(dir.absolutePath)
 
         setContent {
             // remember гарантирует, что объект не пересоздаётся при рекомпозициях.
