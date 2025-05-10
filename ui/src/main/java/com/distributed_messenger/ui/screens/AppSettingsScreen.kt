@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import com.distributed_messenger.logger.Logger
 import com.distributed_messenger.presenter.viewmodels.AppSettingsViewModel
 import com.distributed_messenger.ui.components.SettingItem
@@ -21,7 +22,11 @@ fun AppSettingsScreen(viewModel: AppSettingsViewModel,
         Logger.log("AppSettings", "Screen initialized")
     }
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding()
+    ) {
         items(settings) { (type, value) ->
             SettingItem(
                 type = type,

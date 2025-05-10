@@ -29,6 +29,11 @@ class AppSettingsRepository(private val dao: AppSettingsDao) : IAppSettingsRepos
             }
         }
 
+    override suspend fun getSetting(type: AppSettingType): Int? =
+        loggingWrapper {
+            dao.getByName(type.settingName)?.value
+        }
+
     override suspend fun getAllSettings(): List<Pair<AppSettingType, Int>> =
         loggingWrapper {
             dao.getAll().mapNotNull { entity ->

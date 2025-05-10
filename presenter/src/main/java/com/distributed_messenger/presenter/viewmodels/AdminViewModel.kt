@@ -13,8 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class AdminViewModel(private val authViewModel: AuthViewModel,
-                     private val userService: IUserService,
+class AdminViewModel(private val userService: IUserService,
                      private val blockService: IBlockService) : ViewModel() {
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> = _users
@@ -65,7 +64,7 @@ class AdminViewModel(private val authViewModel: AuthViewModel,
         viewModelScope.launch {
             _state.value = AdminState.Loading
             try {
-                val currentUserId = authViewModel.getCurrentUserId()
+                val currentUserId = SessionManager.currentUserId
                 val blockId = blockService.blockUser(currentUserId, userId, reason)
                 _users.value = _users.value.map { user ->
                     if (user.id == userId) user.copy(blockedUsersId = currentUserId) else user
@@ -84,7 +83,7 @@ class AdminViewModel(private val authViewModel: AuthViewModel,
         viewModelScope.launch {
             _state.value = AdminState.Loading
             try {
-                val currentUserId = authViewModel.getCurrentUserId()
+                val currentUserId = SessionManager.currentUserId
                 val success = blockService.unblockUser(currentUserId, blockedUserId)
                 if (success) {
                     _users.value = _users.value.map { user ->

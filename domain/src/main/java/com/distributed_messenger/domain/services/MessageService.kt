@@ -37,6 +37,11 @@ class MessageService(private val messageRepository: IMessageRepository) : IMessa
             messageRepository.getMessagesByChat(chatId)
         }
 
+    override suspend fun getLastMessage(chatId: UUID): Message? =
+        loggingWrapper {
+            messageRepository.getLastMessageByChat(chatId)
+        }
+
     override suspend fun editMessage(id: UUID, newContent: String): Boolean =
         loggingWrapper {
             val message = messageRepository.getMessage(id) ?: return@loggingWrapper false

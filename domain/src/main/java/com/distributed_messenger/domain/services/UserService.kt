@@ -45,7 +45,10 @@ class UserService(private val userRepository: IUserRepository) : IUserService {
         loggingWrapper {
             userRepository.findByUsername(username)?.id
         }
-
+    override suspend fun findByUserName(username: String): User? =
+        loggingWrapper {
+            userRepository.findByUsername(username)
+        }
     override suspend fun getUser(id: UUID): User? =
         loggingWrapper {
             userRepository.getUser(id)

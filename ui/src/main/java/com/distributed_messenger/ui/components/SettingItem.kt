@@ -27,12 +27,12 @@ fun SettingItem(type: AppSettingType,
             text = type.settingName,
             modifier = Modifier.weight(1f)
         )
-                    // Кнопка с текущим значением
+        // Кнопка с текущим значением
         Button(onClick = { showMenu = true }) {
             Text(type.possibleValues[currentValue] ?: "")
         }
 
-                    // Выпадающее меню
+        // Выпадающее меню
         DropdownMenu(
             expanded = showMenu,
             onDismissRequest = { showMenu = false }

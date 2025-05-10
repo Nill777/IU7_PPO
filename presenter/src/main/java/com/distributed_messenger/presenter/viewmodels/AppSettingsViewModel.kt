@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class AppSettingsViewModel(private val service: IAppSettingsService) : ViewModel() {
-
+    private val _themeState = MutableStateFlow(0)
+    val themeState: StateFlow<Int> = _themeState
     // Состояние: список пар (Тип настройки, Текущее значение)
     private val _settingsState = MutableStateFlow<List<Pair<AppSettingType, Int>>>(emptyList())
     val settingsState: StateFlow<List<Pair<AppSettingType, Int>>> = _settingsState
@@ -28,6 +29,7 @@ class AppSettingsViewModel(private val service: IAppSettingsService) : ViewModel
         Logger.log("AppSettingsVM", "Loading settings from storage")
         try {
             _settingsState.value = service.loadSettings()
+            _themeState.value = service.getSetting(AppSettingType.THEME) ?: 0
             Logger.log("AppSettingsVM", "Settings loaded (count: ${_settingsState.value.size})")
         } catch (e: Exception) {
             Logger.log("AppSettingsVM", "Error loading settings: ${e.message}", LogLevel.ERROR, e)

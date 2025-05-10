@@ -28,7 +28,11 @@ fun BlockManagementScreen(viewModel: AdminViewModel,
         viewModel.loadUsers()
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .statusBarsPadding()
+        .navigationBarsPadding()
+    ) {
         when (state) {
             AdminViewModel.AdminState.Loading -> {
                 Logger.log("BlockManagement", "Loading state")

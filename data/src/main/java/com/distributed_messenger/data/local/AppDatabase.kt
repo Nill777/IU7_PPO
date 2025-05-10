@@ -15,7 +15,7 @@ import com.distributed_messenger.data.local.entities.*
         BlockEntity::class,
         AppSettingsEntity::class
     ],
-    version = 2
+    version = 3
 )
 @TypeConverters(Converters::class)
 

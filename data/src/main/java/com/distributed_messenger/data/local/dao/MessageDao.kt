@@ -19,6 +19,9 @@ interface MessageDao {
     @Query("SELECT * FROM messages WHERE chat_id = :chatId")
     suspend fun getMessagesByChatId(chatId: UUID): List<MessageEntity>
 
+    @Query("SELECT * FROM messages WHERE chat_id = :chatId ORDER BY timestamp DESC LIMIT 1")
+    suspend fun getLastMessageByChatId(chatId: UUID): MessageEntity?
+
     @Insert
     suspend fun insertMessage(message: MessageEntity): Long
 

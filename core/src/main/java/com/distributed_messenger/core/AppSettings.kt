@@ -23,6 +23,14 @@ enum class AppSettingType(val settingName: String, val possibleValues: Map<Int, 
             30 to "30 дней",
             365 to "1 год"
         )
+    ),
+    THEME(
+        settingName = "Тема приложения",
+        possibleValues = mapOf(
+            0 to "Системная",
+            1 to "Светлая",
+            2 to "Тёмная"
+        )
     );
 }
 

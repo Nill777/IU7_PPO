@@ -30,6 +30,11 @@ class MessageRepository(private val messageDao: MessageDao) : IMessageRepository
             messageDao.getMessagesByChatId(chatId).map { it.toDomain() }
         }
 
+    override suspend fun getLastMessageByChat(chatId: UUID): Message? =
+        loggingWrapper {
+            messageDao.getLastMessageByChatId(chatId)?.toDomain()
+        }
+
     override suspend fun addMessage(message: Message): UUID =
         loggingWrapper {
             val rowId = messageDao.insertMessage(message.toEntity())

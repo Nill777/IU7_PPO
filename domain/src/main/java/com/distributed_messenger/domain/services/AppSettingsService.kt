@@ -19,6 +19,11 @@ class AppSettingsService(private val repository: IAppSettingsRepository
             repository.getAllSettings()
         }
 
+    override suspend fun getSetting(type: AppSettingType): Int? =
+        loggingWrapper {
+            repository.getSetting(type)
+        }
+
     override suspend fun updateSetting(type: AppSettingType, value: Int): Boolean =
         loggingWrapper {
             repository.updateSetting(type, value)

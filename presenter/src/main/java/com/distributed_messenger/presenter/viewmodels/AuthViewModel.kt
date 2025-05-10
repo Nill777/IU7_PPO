@@ -11,12 +11,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
+class AuthViewModel(private val userService: IUserService) : ViewModel() {
     // Состояния UI
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
     // Хранение текущего пользователя
-    private lateinit var currentUserId: UUID
+//    private lateinit var currentUserId: UUID
 
     fun register(username: String, role: UserRole) {
         Logger.log("AuthViewModel", "Attempting registration for: $username ($role)")
@@ -29,8 +29,8 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
             try {
-                val userId = iUserService.register(username, role)
-                currentUserId = userId
+                val userId = userService.register(username, role)
+                SessionManager.login(userId, username, role)
                 _authState.value = AuthState.RegistrationSuccess(userId)
                 Logger.log("AuthViewModel", "Registration successful. User ID: $userId")
             } catch (e: Exception) {
@@ -51,9 +51,9 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
             try {
-                val userId = iUserService.login(username)
+                val userId = userService.login(username)
                 userId?.let {
-                    currentUserId = it
+                    SessionManager.login(it, username, userService.getUser(it)?.role ?: UserRole.UNAUTHORIZED_USER)
                     _authState.value = AuthState.LoginSuccess(it)
                     Logger.log("AuthViewModel", "Login successful. User ID: $it")
                 } ?: run {
@@ -67,14 +67,25 @@ class AuthViewModel(private val iUserService: IUserService) : ViewModel() {
         }
     }
 
-    fun getCurrentUserId(): UUID {
-        if (!::currentUserId.isInitialized) {
-            Logger.log("AuthViewModel", "Accessing uninitialized currentUserId", LogLevel.WARN)
+    fun logout() {
+        viewModelScope.launch {
+            try {
+                SessionManager.logout()
+                resetState()
+                Logger.log("AuthViewModel", "Logout successful")
+            } catch (e: Exception) {
+                Logger.log("AuthViewModel", "Logout error: ${e.message}", LogLevel.ERROR, e)
+            }
         }
-        return currentUserId
     }
+//    fun getCurrentUserId(): UUID {
+//        if (!::currentUserId.isInitialized) {
+//            Logger.log("AuthViewModel", "Accessing uninitialized currentUserId", LogLevel.WARN)
+//        }
+//        return currentUserId
+//    }
 
-    fun resetState() {
+    private fun resetState() {
         _authState.value = AuthState.Idle
         Logger.log("AuthViewModel", "Auth state reset")
     }

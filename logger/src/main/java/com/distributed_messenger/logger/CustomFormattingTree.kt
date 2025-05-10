@@ -20,7 +20,6 @@ class CustomFormattingTree(private val logFile: File) : Timber.Tree() {
             else -> "UNKNOWN"
         }
 
-        // Формат: %d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %msg%n
         val formattedMessage = "$time [$level] $tag - $message"
         Log.println(priority, tag ?: "App", formattedMessage)
         logFile.appendText(formattedMessage + "\n")
