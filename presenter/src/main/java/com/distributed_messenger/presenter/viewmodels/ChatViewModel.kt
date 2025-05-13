@@ -68,6 +68,15 @@ class ChatViewModel(private val messageService: IMessageService,
         }
     }
 
+    fun deleteMessage(messageId: UUID) {
+        viewModelScope.launch {
+            val isDeleted = messageService.deleteMessage(messageId)
+            if (isDeleted) {
+                loadMessages()
+            }
+        }
+    }
+
     fun deleteChat() {
         viewModelScope.launch {
             _deleteStatus.value = chatService.deleteChat(chatId)

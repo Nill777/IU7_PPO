@@ -180,13 +180,17 @@ fun ChatListScreen(viewModel: ChatListViewModel,
                         Text(
                             text = SessionManager.currentUserName,
                             style = MaterialTheme.typography.titleMedium,
-                            color = colorScheme.onPrimary
+                            color = colorScheme.onPrimary,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
                         )
 
                         Text(
                             text = "${SessionManager.currentUserId}",
                             style = MaterialTheme.typography.bodyMedium,
                             color = colorScheme.onPrimary.copy(alpha = 0.7f),
+                            modifier = Modifier
+                                .padding(start = 4.dp)
                         )
                     }
 

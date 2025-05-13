@@ -30,12 +30,27 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.distributed_messenger.core.Message
 import com.distributed_messenger.presenter.viewmodels.ChatListViewModel
 import com.distributed_messenger.presenter.viewmodels.SessionManager
 import com.distributed_messenger.ui.R
 import com.distributed_messenger.ui.components.ChatListItem
 import com.distributed_messenger.ui.components.MessageItem
+
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+//import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
+import com.distributed_messenger.ui.components.MessageMenu
+import kotlin.math.roundToInt
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -86,6 +101,10 @@ fun ChatScreen(viewModel: ChatViewModel,
     var messageText by remember { mutableStateOf("") }
     var isMenuExpanded by remember { mutableStateOf(false) }
     val deleteStatus by viewModel.deleteStatus.collectAsState()
+    var contextMenuState by remember {
+        // Сохраняет выбранное сообщение и его позицию на экране (в пикселях)
+        mutableStateOf<Pair<Message, IntOffset>?>(null)
+    }
 
     val colorScheme = MaterialTheme.colorScheme
 
@@ -123,6 +142,18 @@ fun ChatScreen(viewModel: ChatViewModel,
             }
             null -> {} // Инициализация или сброс
         }
+    }
+
+    // Контекстное меню
+    contextMenuState?.let { (message, position) ->
+        MessageMenu(
+            message = message,
+            position = position,
+            onDismiss = { contextMenuState = null },
+            modifier = Modifier,
+            viewModel = viewModel,
+            navigationController = navigationController
+        )
     }
 
     Box(
@@ -165,8 +196,8 @@ fun ChatScreen(viewModel: ChatViewModel,
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Box(
-                    modifier = Modifier
-                        .clickable { navigationController.navigateToProfile() }
+//                    modifier = Modifier
+//                        .clickable { navigationController.navigateToProfile() }
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.avatar_placeholder),
@@ -229,7 +260,15 @@ fun ChatScreen(viewModel: ChatViewModel,
                     .padding(horizontal = 10.dp)
             ) {
                 items(messages) { message ->
-                    MessageItem(message, message.senderId == SessionManager.currentUserId)
+                    MessageItem(
+                        message = message,
+                        isCurrentUser = message.senderId == SessionManager.currentUserId,
+                        // При длинном нажатии на сообщение вызывается лямбда,
+                        // которая сохраняет сообщение и его позицию в contextMenuState
+                        onLongClick = { offset ->
+                            contextMenuState = message to offset
+                        }
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                 }
             }

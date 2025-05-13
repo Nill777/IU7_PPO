@@ -67,7 +67,7 @@ fun SettingsScreen(navigationController: NavigationController) {
                     .background(colorScheme.primary),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier.width(17.dp))
+                Spacer(modifier = Modifier.width(15.dp))
                 Icon(
                     painter = painterResource(R.drawable.side_menu_settings),
                     contentDescription = "Settings",

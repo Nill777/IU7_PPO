@@ -88,7 +88,7 @@ fun ProfileScreen(viewModel: ProfileViewModel,
                     .background(colorScheme.primary),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(17.dp))
                 Icon(
                     painter = painterResource(R.drawable.avatar_placeholder),
                     contentDescription = "Avatar",
