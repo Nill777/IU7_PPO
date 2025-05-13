@@ -21,6 +21,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.distributed_messenger.core.Message
 import com.distributed_messenger.presenter.viewmodels.ChatViewModel
+import com.distributed_messenger.presenter.viewmodels.SessionManager
 import com.distributed_messenger.ui.NavigationController
 import com.distributed_messenger.ui.R
 
@@ -92,19 +93,20 @@ fun MessageMenu(
                             onDismiss()
                         }
                     )
-                    MessageMenuItem(
-                        icon = R.drawable.message_menu_edit,
-                        text = "Edit",
-                        onClick = {
-                            // viewModel.editMessage(message)
-                            onDismiss()
-                        }
-                    )
+                    if (message.senderId == SessionManager.currentUserId)
+                        MessageMenuItem(
+                            icon = R.drawable.message_menu_edit,
+                            text = "Edit",
+                            onClick = {
+                                viewModel.startEditing(message)
+                                onDismiss()
+                            }
+                        )
                     MessageMenuItem(
                         icon = R.drawable.message_menu_history,
                         text = "History",
                         onClick = {
-                            // navigationController.navigateToHistory(message.id)
+                            navigationController.navigateToMessageHistory(message.id)
                             onDismiss()
                         }
                     )

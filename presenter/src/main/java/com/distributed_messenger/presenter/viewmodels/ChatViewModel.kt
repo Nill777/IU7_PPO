@@ -24,6 +24,9 @@ class ChatViewModel(private val messageService: IMessageService,
     private val _deleteStatus = MutableStateFlow<Boolean?>(null)
     val deleteStatus: StateFlow<Boolean?> = _deleteStatus
 
+    private val _editingMessage = MutableStateFlow<Message?>(null)
+    val editingMessage: StateFlow<Message?> = _editingMessage
+
 //    private val _companionName = MutableStateFlow<String?>(null)
 //    val companionName: StateFlow<String?> = _companionName
 
@@ -82,7 +85,25 @@ class ChatViewModel(private val messageService: IMessageService,
             _deleteStatus.value = chatService.deleteChat(chatId)
         }
     }
+
     fun clearDeleteStatus() {
         _deleteStatus.value = null
+    }
+
+    fun startEditing(message: Message) {
+        _editingMessage.value = message
+    }
+
+    fun editMessage(messageId: UUID, newContent: String) {
+        viewModelScope.launch {
+            val isEdited = messageService.editMessage(messageId, newContent)
+            if (isEdited) {
+                loadMessages()
+            }
+        }
+    }
+
+    fun cancelEditing() {
+        _editingMessage.value = null
     }
 }

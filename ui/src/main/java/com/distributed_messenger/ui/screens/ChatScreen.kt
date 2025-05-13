@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -92,6 +93,8 @@ fun ChatScreen(viewModel: ChatViewModel,
                navigationController: NavigationController) {
     val messages by viewModel.messages.collectAsState()
     val chatInfo by viewModel.chatInfo.collectAsState()
+    val editingMessage by viewModel.editingMessage.collectAsState()
+
     val scrollState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -106,15 +109,13 @@ fun ChatScreen(viewModel: ChatViewModel,
         mutableStateOf<Pair<Message, IntOffset>?>(null)
     }
 
-    val colorScheme = MaterialTheme.colorScheme
-
     // Автопрокрутка к новым сообщениям
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             scrollState.animateScrollToItem(messages.size - 1)
         }
     }
-    // время в сети
+    // Время в сети
     LaunchedEffect(messages) {
         val lastMessage = messages
             .filter { it.senderId != SessionManager.currentUserId }
@@ -126,8 +127,7 @@ fun ChatScreen(viewModel: ChatViewModel,
             lastOnline = formatter.format(date)
         }
     }
-
-    // удаление чата
+    // Удаление чата
     LaunchedEffect(deleteStatus) {
         when (deleteStatus) {
             true -> {
@@ -143,6 +143,13 @@ fun ChatScreen(viewModel: ChatViewModel,
             null -> {} // Инициализация или сброс
         }
     }
+    // Автоподстановка текста при редактировании
+    LaunchedEffect(editingMessage) {
+        editingMessage?.let {
+            messageText = it.content
+            keyboardController?.show()
+        }
+    }
 
     // Контекстное меню
     contextMenuState?.let { (message, position) ->
@@ -154,6 +161,17 @@ fun ChatScreen(viewModel: ChatViewModel,
             viewModel = viewModel,
             navigationController = navigationController
         )
+    }
+
+    // Обработка отправки
+    fun handleSend() {
+        editingMessage?.let { msg ->
+            viewModel.editMessage(msg.id, messageText)
+            viewModel.cancelEditing()
+        } ?: run {
+            viewModel.sendMessage(messageText)
+        }
+        messageText = ""
     }
 
     Box(
@@ -291,7 +309,9 @@ fun ChatScreen(viewModel: ChatViewModel,
                         .clip(RectangleShape),
                     placeholder = {
                         Text(
-                            text = "Message",
+                            text =
+                                if (editingMessage != null) "Edit message"
+                                else "Message",
                             color = colorScheme.onSurfaceVariant
                         )
                     },
@@ -324,8 +344,9 @@ fun ChatScreen(viewModel: ChatViewModel,
                 Box(
                     modifier = Modifier
                         .clickable {
-                            viewModel.sendMessage(messageText)
-                            messageText = ""
+                            handleSend()
+//                            viewModel.sendMessage(messageText)
+//                            messageText = ""
                             // штуки чтобы скрыть клавиатуру
 //                            keyboardController?.hide()
 //                            focusManager.clearFocus()

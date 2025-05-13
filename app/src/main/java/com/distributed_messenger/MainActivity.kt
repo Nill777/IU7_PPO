@@ -20,11 +20,13 @@ import com.distributed_messenger.data.local.dao.BlockDao
 import com.distributed_messenger.data.local.dao.ChatDao
 import com.distributed_messenger.data.local.dao.FileDao
 import com.distributed_messenger.data.local.dao.MessageDao
+import com.distributed_messenger.data.local.dao.MessageHistoryDao
 import com.distributed_messenger.data.local.dao.UserDao
 import com.distributed_messenger.data.local.repositories.AppSettingsRepository
 import com.distributed_messenger.data.local.repositories.BlockRepository
 import com.distributed_messenger.data.local.repositories.ChatRepository
 import com.distributed_messenger.data.local.repositories.FileRepository
+import com.distributed_messenger.data.local.repositories.MessageHistoryRepository
 import com.distributed_messenger.data.local.repositories.MessageRepository
 import com.distributed_messenger.data.local.repositories.UserRepository
 import com.distributed_messenger.domain.services.AppSettingsService
@@ -38,6 +40,7 @@ import com.distributed_messenger.presenter.viewmodels.AppSettingsViewModel
 import com.distributed_messenger.presenter.viewmodels.AuthViewModel
 import com.distributed_messenger.presenter.viewmodels.ChatListViewModel
 import com.distributed_messenger.presenter.viewmodels.ChatViewModel
+import com.distributed_messenger.presenter.viewmodels.MessageHistoryViewModel
 import com.distributed_messenger.presenter.viewmodels.NewChatViewModel
 import com.distributed_messenger.presenter.viewmodels.ProfileViewModel
 import com.distributed_messenger.ui.NavigationController
@@ -50,6 +53,7 @@ import com.distributed_messenger.ui.screens.BlockManagementScreen
 import com.distributed_messenger.ui.screens.ChatListScreen
 import com.distributed_messenger.ui.screens.ChatScreen
 import com.distributed_messenger.ui.screens.MainScreen
+import com.distributed_messenger.ui.screens.MessageHistoryScreen
 import com.distributed_messenger.ui.screens.NewChatScreen
 //import com.distributed_messenger.ui.screens.NewChatScreen
 import com.distributed_messenger.ui.screens.ProfileScreen
@@ -104,6 +108,9 @@ class MainActivity : ComponentActivity() {
     private val messageDao: MessageDao by lazy {
         appDatabase.messageDao()
     }
+    private val messageHistoryDao: MessageHistoryDao by lazy {
+        appDatabase.messageHistoryDao()
+    }
     private val blockDao: BlockDao by lazy {
         appDatabase.blockDao()
     }
@@ -124,6 +131,9 @@ class MainActivity : ComponentActivity() {
     private val messageRepository: MessageRepository by lazy {
         MessageRepository(messageDao)
     }
+    private val messageHistoryRepository: MessageHistoryRepository by lazy {
+        MessageHistoryRepository(messageHistoryDao)
+    }
     private val blockRepository: BlockRepository by lazy {
         BlockRepository(blockDao)
     }
@@ -142,7 +152,7 @@ class MainActivity : ComponentActivity() {
         FileService(fileRepository)
     }
     private val messageService: MessageService by lazy {
-        MessageService(messageRepository)
+        MessageService(messageRepository, messageHistoryRepository)
     }
     private val blockService: BlockService by lazy {
         BlockService(blockRepository)
@@ -170,6 +180,14 @@ class MainActivity : ComponentActivity() {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return NewChatViewModel(userService, chatService) as T
+            }
+        }
+    }
+
+    private val messageHistoryViewModel: MessageHistoryViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return MessageHistoryViewModel(messageService) as T
             }
         }
     }
@@ -252,6 +270,14 @@ class MainActivity : ComponentActivity() {
                     composable("new_chat") {
                         NewChatScreen(viewModel = newChatViewModel,
                             navigationController = navigationController)
+                    }
+                    composable("message_history/{messageId}") { backStackEntry ->
+                        val messageId = UUID.fromString(backStackEntry.arguments?.getString("messageId"))
+                        MessageHistoryScreen(
+                            viewModel = messageHistoryViewModel,
+                            messageId = messageId,
+                            navigationController = navigationController
+                        )
                     }
                     composable("profile") {
                         ProfileScreen(viewModel = profileViewModel,

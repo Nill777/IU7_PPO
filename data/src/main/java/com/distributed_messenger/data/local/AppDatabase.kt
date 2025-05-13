@@ -9,18 +9,20 @@ import com.distributed_messenger.data.local.entities.*
 @Database(
     entities = [
         MessageEntity::class,
+        MessageHistoryEntity::class,
         ChatEntity::class,
         UserEntity::class,
         FileEntity::class,
         BlockEntity::class,
         AppSettingsEntity::class
     ],
-    version = 3
+    version = 4
 )
 @TypeConverters(Converters::class)
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
+    abstract fun messageHistoryDao(): MessageHistoryDao
     abstract fun chatDao(): ChatDao
     abstract fun userDao(): UserDao
     abstract fun fileDao(): FileDao

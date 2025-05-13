@@ -9,6 +9,7 @@ class NavigationController (private val navController: NavHostController) {
         const val AUTH = "auth"
         const val CHAT_LIST = "chat_list"
         const val CHAT = "chat/{chatId}"
+        const val MESSAGE_HISTORY = "message_history/{messageId}"
         const val NEW_CHAT = "new_chat"
         const val HOME = "home"
         const val PROFILE = "profile"
@@ -35,6 +36,10 @@ class NavigationController (private val navController: NavHostController) {
 
     fun navigateToChat(chatId: UUID) {
         navController.navigate("chat/$chatId")
+    }
+
+    fun navigateToMessageHistory(messageId: UUID) {
+        navController.navigate("message_history/$messageId")
     }
 
     fun navigateToNewChat() {

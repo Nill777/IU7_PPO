@@ -1,6 +1,7 @@
 package com.distributed_messenger.domain.iservices
 
 import com.distributed_messenger.core.Message
+import com.distributed_messenger.core.MessageHistory
 import java.util.UUID
 
 interface IMessageService {
@@ -9,5 +10,6 @@ interface IMessageService {
     suspend fun getChatMessages(chatId: UUID): List<Message>
     suspend fun getLastMessage(chatId: UUID): Message?
     suspend fun editMessage(id: UUID, newContent: String): Boolean
+    suspend fun getMessageHistory(messageId: UUID): List<MessageHistory>
     suspend fun deleteMessage(id: UUID): Boolean
 }
