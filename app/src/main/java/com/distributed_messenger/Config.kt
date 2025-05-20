@@ -16,13 +16,13 @@ object Config {
             while (parser.eventType != XmlResourceParser.END_DOCUMENT) {
                 if (parser.eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
-                        "logdir" -> logDir = parser.getAttributeValue(null, "dir")
-                        "databaseType" -> databaseType = parser.getAttributeValue(null, "databaseType")
-                        "database" -> {
+                        "logDir" -> logDir = parser.getAttributeValue(null, "dir")
+                        "dbType" -> databaseType = parser.getAttributeValue(null, "type")
+                        "db" -> {
                             dbName = parser.getAttributeValue(null, "name")
                             dbVersion = parser.getAttributeValue(null, "version")?.toIntOrNull() ?: dbVersion
                         }
-                        "mongoUri" -> mongoUri = parser.getAttributeValue(null, "mongoUri")
+                        "mongoUri" -> mongoUri = parser.getAttributeValue(null, "uri")
                     }
                 }
                 parser.next()

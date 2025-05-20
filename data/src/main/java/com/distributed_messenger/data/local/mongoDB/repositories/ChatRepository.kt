@@ -22,7 +22,7 @@ class MongoChatRepository(private val collection: MongoCollection<Document>) : I
 
     override suspend fun getChat(id: UUID): Chat? =
         loggingWrapper {
-            collection.find(Filters.eq("_id", id))
+            collection.find(Filters.eq("_id", id.toString()))
                 .firstOrNull()
                 ?.toChat()
         }
@@ -38,8 +38,8 @@ class MongoChatRepository(private val collection: MongoCollection<Document>) : I
         loggingWrapper {
             collection.find(
                 Filters.or(
-                    Filters.eq("userId", userId),
-                    Filters.eq("companionId", userId)
+                    Filters.eq("creatorId", userId.toString()),
+                    Filters.eq("companionId", userId.toString())
                 )
             ).toList().mapNotNull { it.toChat() }
         }
@@ -53,7 +53,7 @@ class MongoChatRepository(private val collection: MongoCollection<Document>) : I
     override suspend fun updateChat(chat: Chat): Boolean =
         loggingWrapper {
             val result = collection.updateOne(
-                Filters.eq("_id", chat.id),
+                Filters.eq("_id", chat.id.toString()),
                 chat.toUpdateDocument()
             )
             result.modifiedCount == 1L
@@ -61,15 +61,15 @@ class MongoChatRepository(private val collection: MongoCollection<Document>) : I
 
     override suspend fun deleteChat(id: UUID): Boolean =
         loggingWrapper {
-            val result = collection.deleteOne(Filters.eq("_id", id))
+            val result = collection.deleteOne(Filters.eq("_id", id.toString()))
             result.deletedCount == 1L
         }
 
     private fun Chat.toDocument(): Document {
         return Document().apply {
-            put("_id", id)
+            put("_id", id.toString())
             put("name", name)
-            put("userId", creatorId.toString())
+            put("creatorId", creatorId.toString())
             put("companionId", companionId?.toString())
             put("isGroupChat", isGroupChat)
         }
@@ -78,10 +78,10 @@ class MongoChatRepository(private val collection: MongoCollection<Document>) : I
     private fun Document.toChat(): Chat? {
         return try {
             Chat(
-                id = getUUID("_id"),
+                id = UUID.fromString(getString("_id")),
                 name = getString("name"),
-                creatorId = UUID.fromString(getString("userId")),
-                companionId = getUUIDOrNull("companionId"),
+                creatorId = UUID.fromString(getString("creatorId")),
+                companionId = getString("companionId")?.let { UUID.fromString(it) },
                 isGroupChat = getBoolean("isGroupChat", false)
             )
         } catch (e: Exception) {
@@ -92,15 +92,9 @@ class MongoChatRepository(private val collection: MongoCollection<Document>) : I
     private fun Chat.toUpdateDocument(): Bson {
         return Updates.combine(
             Updates.set("name", name),
-            Updates.set("userId", creatorId.toString()),
+            Updates.set("creatorId", creatorId.toString()),
             Updates.set("companionId", companionId?.toString()),
             Updates.set("isGroupChat", isGroupChat)
         )
     }
-
-    private fun Document.getUUID(key: String): UUID = UUID.fromString(getString(key))
-    private fun Document.getUUIDOrNull(key: String): UUID? =
-        get(key)?.toString()?.let { UUID.fromString(it) }
-//    private fun Document.getBoolean(key: String, default: Boolean) =
-//        get(key)?.toString()?.toBooleanStrictOrNull() ?: default
 }

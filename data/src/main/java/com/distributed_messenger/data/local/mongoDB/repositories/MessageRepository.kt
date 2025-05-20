@@ -23,7 +23,7 @@ class MongoMessageRepository(private val collection: MongoCollection<Document>) 
 
     override suspend fun getMessage(id: UUID): Message? =
         loggingWrapper {
-            collection.find(Filters.eq("_id", id))
+            collection.find(Filters.eq("_id", id.toString()))
                 .firstOrNull()
                 ?.toMessage()
         }
@@ -37,14 +37,14 @@ class MongoMessageRepository(private val collection: MongoCollection<Document>) 
 
     override suspend fun getMessagesByChat(chatId: UUID): List<Message> =
         loggingWrapper {
-            collection.find(Filters.eq("chatId", chatId))
+            collection.find(Filters.eq("chatId", chatId.toString()))
                 .toList()
                 .mapNotNull { it.toMessage() }
         }
 
     override suspend fun getLastMessageByChat(chatId: UUID): Message? =
         loggingWrapper {
-            collection.find(Filters.eq("chatId", chatId))
+            collection.find(Filters.eq("chatId", chatId.toString()))
                 .sort(Sorts.descending("timestamp"))
                 .firstOrNull()
                 ?.toMessage()
@@ -59,7 +59,7 @@ class MongoMessageRepository(private val collection: MongoCollection<Document>) 
     override suspend fun updateMessage(message: Message): Boolean =
         loggingWrapper {
             val result = collection.updateOne(
-                Filters.eq("_id", message.id),
+                Filters.eq("_id", message.id.toString()),
                 message.toUpdateDocument()
             )
             result.modifiedCount == 1L
@@ -67,17 +67,17 @@ class MongoMessageRepository(private val collection: MongoCollection<Document>) 
 
     override suspend fun deleteMessage(id: UUID): Boolean =
         loggingWrapper {
-            val result = collection.deleteOne(Filters.eq("_id", id))
+            val result = collection.deleteOne(Filters.eq("_id", id.toString()))
             result.deletedCount == 1L
         }
 
     private fun Message.toDocument(): Document {
         return Document().apply {
-            put("_id", id)
-            put("senderId", senderId)
-            put("chatId", chatId)
+            put("_id", id.toString())
+            put("senderId", senderId.toString())
+            put("chatId", chatId.toString())
             put("content", content)
-            put("fileId", fileId)
+            put("fileId", fileId?.toString()) // UUID? -> String?
             put("timestamp", timestamp.toEpochMilli())
         }
     }
@@ -85,11 +85,11 @@ class MongoMessageRepository(private val collection: MongoCollection<Document>) 
     private fun Document.toMessage(): Message? {
         return try {
             Message(
-                id = getUUID("_id"),
-                senderId = getUUID("senderId"),
-                chatId = getUUID("chatId"),
+                id = UUID.fromString(getString("_id")),
+                senderId = UUID.fromString(getString("senderId")),
+                chatId = UUID.fromString(getString("chatId")),
                 content = getString("content"),
-                fileId = getUUIDOrNull("fileId"),
+                fileId = get("fileId")?.toString()?.let { UUID.fromString(it) },
                 timestamp = Instant.ofEpochMilli(getLong("timestamp"))
             )
         } catch (e: Exception) {
@@ -99,15 +99,11 @@ class MongoMessageRepository(private val collection: MongoCollection<Document>) 
 
     private fun Message.toUpdateDocument(): Bson {
         return com.mongodb.client.model.Updates.combine(
-            com.mongodb.client.model.Updates.set("senderId", senderId),
-            com.mongodb.client.model.Updates.set("chatId", chatId),
+            com.mongodb.client.model.Updates.set("senderId", senderId.toString()),
+            com.mongodb.client.model.Updates.set("chatId", chatId.toString()),
             com.mongodb.client.model.Updates.set("content", content),
-            com.mongodb.client.model.Updates.set("fileId", fileId),
+            com.mongodb.client.model.Updates.set("fileId", fileId?.toString()),
             com.mongodb.client.model.Updates.set("timestamp", timestamp.toEpochMilli())
         )
     }
-
-    private fun Document.getUUID(key: String): UUID = UUID.fromString(getString(key))
-    private fun Document.getUUIDOrNull(key: String): UUID? =
-        get(key)?.let { UUID.fromString(it.toString()) }
 }

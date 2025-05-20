@@ -94,8 +94,6 @@ dependencies {
 
     // MongoDB
     implementation(libs.mongodb.driver.kotlin)
-    implementation(libs.bson.kotlin)
-//    coreLibraryDesugaring(libs.android.desugarJdk)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)

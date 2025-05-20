@@ -22,7 +22,7 @@ class MongoFileRepository(private val collection: MongoCollection<Document>) : I
 
     override suspend fun getFile(id: UUID): File? =
         loggingWrapper {
-            collection.find(Filters.eq("_id", id))
+            collection.find(Filters.eq("_id", id.toString()))
                 .firstOrNull()
                 ?.toFile()
         }
@@ -36,7 +36,7 @@ class MongoFileRepository(private val collection: MongoCollection<Document>) : I
 
     override suspend fun getFilesByUser(userId: UUID): List<File> =
         loggingWrapper {
-            collection.find(Filters.eq("uploadedBy", userId))
+            collection.find(Filters.eq("uploadedBy", userId.toString()))
                 .toList()
                 .mapNotNull { it.toFile() }
         }
@@ -50,7 +50,7 @@ class MongoFileRepository(private val collection: MongoCollection<Document>) : I
     override suspend fun updateFile(file: File): Boolean =
         loggingWrapper {
             val result = collection.updateOne(
-                Filters.eq("_id", file.id),
+                Filters.eq("_id", file.id.toString()),
                 file.toUpdateDocument()
             )
             result.modifiedCount == 1L
@@ -58,13 +58,13 @@ class MongoFileRepository(private val collection: MongoCollection<Document>) : I
 
     override suspend fun deleteFile(id: UUID): Boolean =
         loggingWrapper {
-            val result = collection.deleteOne(Filters.eq("_id", id))
+            val result = collection.deleteOne(Filters.eq("_id", id.toString()))
             result.deletedCount == 1L
         }
 
     private fun File.toDocument(): Document {
         return Document().apply {
-            put("_id", id)
+            put("_id", id.toString())
             put("name", name)
             put("type", type)
             put("path", path)
@@ -76,9 +76,9 @@ class MongoFileRepository(private val collection: MongoCollection<Document>) : I
     private fun Document.toFile(): File? {
         return try {
             File(
-                id = getUUID("_id"),
+                id = UUID.fromString(getString("_id")),
                 name = getString("name"),
-                type = getStringOrNull("type"),
+                type = get("type")?.toString(),
                 path = getString("path"),
                 uploadedBy = UUID.fromString(getString("uploadedBy")),
                 uploadedTimestamp = Instant.ofEpochMilli(getLong("uploadedTimestamp"))
@@ -97,7 +97,4 @@ class MongoFileRepository(private val collection: MongoCollection<Document>) : I
             com.mongodb.client.model.Updates.set("uploadedTimestamp", uploadedTimestamp.toEpochMilli())
         )
     }
-
-    private fun Document.getUUID(key: String): UUID = UUID.fromString(getString(key))
-    private fun Document.getStringOrNull(key: String): String? = get(key)?.toString()
 }

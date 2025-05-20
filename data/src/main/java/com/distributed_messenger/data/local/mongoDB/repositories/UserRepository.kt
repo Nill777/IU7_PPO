@@ -25,7 +25,7 @@ class MongoUserRepository(private val collection: MongoCollection<org.bson.Docum
 
     override suspend fun getUser(id: UUID): User? =
         loggingWrapper {
-            val document = collection.find(Filters.eq("_id", id)).firstOrNull()
+            val document = collection.find(Filters.eq("_id", id.toString())).firstOrNull()
             document?.toUser()
         }
 
@@ -50,7 +50,7 @@ class MongoUserRepository(private val collection: MongoCollection<org.bson.Docum
     override suspend fun updateUser(user: User): Boolean =
         loggingWrapper {
             val result = collection.updateOne(
-                Filters.eq("_id", user.id),
+                Filters.eq("_id", user.id.toString()),
                 user.toUpdateDocument()
             )
             result.modifiedCount == 1L
@@ -58,16 +58,16 @@ class MongoUserRepository(private val collection: MongoCollection<org.bson.Docum
 
     override suspend fun deleteUser(id: UUID): Boolean =
         loggingWrapper {
-            val result = collection.deleteOne(Filters.eq("_id", id))
+            val result = collection.deleteOne(Filters.eq("_id", id.toString()))
             result.deletedCount == 1L
         }
 
     private fun User.toDocument(): org.bson.Document {
         return org.bson.Document().apply {
-            put("_id", id)
+            put("_id", id.toString()) // UUID -> String
             put("username", username)
             put("role", role.name)
-            put("blockedUsersId", blockedUsersId)
+            put("blockedUsersId", blockedUsersId?.toString())
             put("profileSettingsId", profileSettingsId.toString())
             put("appSettingsId", appSettingsId.toString())
         }
@@ -76,10 +76,10 @@ class MongoUserRepository(private val collection: MongoCollection<org.bson.Docum
     private fun org.bson.Document.toUser(): User? {
         return try {
             User(
-                id = getUUID("_id"),
+                id = UUID.fromString(getString("_id")), // String -> UUID
                 username = getString("username"),
                 role = UserRole.valueOf(getString("role")),
-                blockedUsersId = getUUID("blockedUsersId"),
+                blockedUsersId = getString("blockedUsersId")?.let { UUID.fromString(it) },
                 profileSettingsId = UUID.fromString(getString("profileSettingsId")),
                 appSettingsId = UUID.fromString(getString("appSettingsId"))
             )
@@ -92,18 +92,9 @@ class MongoUserRepository(private val collection: MongoCollection<org.bson.Docum
         return Updates.combine(
             Updates.set("username", username),
             Updates.set("role", role.name),
-            Updates.set("blockedUsersId", blockedUsersId),
+            Updates.set("blockedUsersId", blockedUsersId?.toString()),
             Updates.set("profileSettingsId", profileSettingsId.toString()),
             Updates.set("appSettingsId", appSettingsId.toString())
         )
-    }
-
-    private fun org.bson.Document.getUUID(key: String): UUID {
-        return when (val value = this[key]) {
-            is UUID -> value
-            is BsonBinary -> value.asUuid(UuidRepresentation.STANDARD)
-            is BsonString -> UUID.fromString(value.value)
-            else -> UUID.fromString(value.toString())
-        }
     }
 }

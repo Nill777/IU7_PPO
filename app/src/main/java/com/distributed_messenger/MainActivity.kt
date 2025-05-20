@@ -74,9 +74,12 @@ import com.distributed_messenger.ui.screens.NewChatScreen
 import com.distributed_messenger.ui.screens.ProfileScreen
 import com.distributed_messenger.ui.screens.SettingsScreen
 import com.distributed_messenger.ui.theme.DistributedMessengerTheme
+import com.mongodb.ConnectionString
+import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.launch
+import org.bson.UuidRepresentation
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -116,13 +119,12 @@ class MainActivity : ComponentActivity() {
 
     private val mongoDatabase: MongoDatabase? by lazy {
         if (Config.databaseType == "mongodb") {
-            MongoClient.create(Config.mongoUri).getDatabase(Config.dbName).also {
-//                lifecycleScope.launch {
-//                    val appSettingsRepo = MongoAppSettingsRepository(it.getCollection("app_settings"))
-//                    appSettingsRepo.initializeIndexes()
-//                    appSettingsRepo.initializeDefaultSettings()
-//                }
-            }
+            MongoClient.create(
+                MongoClientSettings.builder()
+                    .applyConnectionString(ConnectionString(Config.mongoUri))
+                    .uuidRepresentation(UuidRepresentation.STANDARD)
+                    .build()
+            ).getDatabase(Config.dbName)
         } else null
     }
 

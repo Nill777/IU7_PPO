@@ -94,7 +94,7 @@ class MongoBlockRepository(private val collection: MongoCollection<Document>) : 
                 id = UUID.fromString(getString("_id")),
                 blockerId = UUID.fromString(getString("blockerId")),
                 blockedUserId = UUID.fromString(getString("blockedUserId")),
-                reason = getStringOrNull("reason"),
+                reason = get("reason")?.toString(),
                 timestamp = Instant.ofEpochMilli(getLong("timestamp"))
             )
         } catch (e: Exception) {
@@ -110,7 +110,4 @@ class MongoBlockRepository(private val collection: MongoCollection<Document>) : 
             Updates.set("timestamp", timestamp.toEpochMilli())
         )
     }
-
-    private fun Document.getStringOrNull(key: String): String? =
-        get(key)?.toString()
 }

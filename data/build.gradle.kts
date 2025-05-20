@@ -34,12 +34,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11" // Указываем JVM-таргет здесь
+        jvmTarget = "17" // Указываем JVM-таргет здесь
     }
 }
 
@@ -60,7 +60,6 @@ dependencies {
 
     // MongoDB
     implementation(libs.mongodb.driver.kotlin)
-    implementation(libs.bson.kotlin)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
