@@ -26,6 +26,8 @@ kotlinLogging = "3.0.5"
 logback = "1.4.7"
 log4j = "2.23.0"
 timberv = "5.0.1"
+mongoDB = "4.11.0"
+desugarJdk = "2.0.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +51,11 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
+
+# MongoDB
+mongodb-driver-kotlin = { group = "org.mongodb", name = "mongodb-driver-kotlin-coroutine", version.ref = "mongoDB" }
+bson-kotlin = { group = "org.mongodb", name = "bson-kotlin", version.ref = "mongoDB" }
+android-desugarJdk = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdk" }
 
 # Coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }

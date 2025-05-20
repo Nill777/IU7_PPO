@@ -6,7 +6,9 @@ import org.xmlpull.v1.XmlPullParser
 
 object Config {
     lateinit var logDir: String
+    lateinit var databaseType: String
     lateinit var dbName: String
+    lateinit var mongoUri: String
     var dbVersion: Int = 1
 
     fun initialize(context: Context) {
@@ -15,10 +17,12 @@ object Config {
                 if (parser.eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
                         "logdir" -> logDir = parser.getAttributeValue(null, "dir")
+                        "databaseType" -> databaseType = parser.getAttributeValue(null, "databaseType")
                         "database" -> {
                             dbName = parser.getAttributeValue(null, "name")
-                            dbVersion = parser.getAttributeValue(null, "version")?.toIntOrNull() ?: 1
+                            dbVersion = parser.getAttributeValue(null, "version")?.toIntOrNull() ?: dbVersion
                         }
+                        "mongoUri" -> mongoUri = parser.getAttributeValue(null, "mongoUri")
                     }
                 }
                 parser.next()

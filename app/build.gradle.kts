@@ -37,11 +37,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+//        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -50,6 +51,7 @@ android {
 
     packaging {
         resources.pickFirsts.add("META-INF/DEPENDENCIES")
+        resources.pickFirsts.add("META-INF/native-image/org.mongodb/bson/native-image.properties")
     }
 
     // Для тестов с корутинами
@@ -89,6 +91,11 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.core.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // MongoDB
+    implementation(libs.mongodb.driver.kotlin)
+    implementation(libs.bson.kotlin)
+//    coreLibraryDesugaring(libs.android.desugarJdk)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)

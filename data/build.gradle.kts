@@ -58,6 +58,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // MongoDB
+    implementation(libs.mongodb.driver.kotlin)
+    implementation(libs.bson.kotlin)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
