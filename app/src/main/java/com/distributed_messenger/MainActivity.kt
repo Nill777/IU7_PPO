@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -216,6 +217,12 @@ class MainActivity : ComponentActivity() {
         // Инициализация конфига перед использованием
         Config.initialize(applicationContext)
 
+        lifecycleScope.launch {
+            if (shouldMigrateFromRoomToMongo()) {
+                performMigration()
+            }
+        }
+
         val dir =
             File(applicationContext.getExternalFilesDir(null), Config.logDir).apply { mkdirs() }
         Logger.initialize(dir.absolutePath)
@@ -322,6 +329,103 @@ class MainActivity : ComponentActivity() {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T = creator() as T
         }
+
+    private fun shouldMigrateFromRoomToMongo(): Boolean {
+        val prefs = getSharedPreferences("migration_prefs", MODE_PRIVATE)
+        val lastDbType = prefs.getString("last_db_type", null)
+        val currentDbType = Config.databaseType
+
+        prefs.edit { putString("last_db_type", currentDbType) }
+
+        return lastDbType == "room" && currentDbType == "mongodb"
+    }
+
+    private suspend fun performMigration() {
+        val roomRepos = RoomRepositories(
+            Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java,
+                "messenger_db"
+            ).build()
+        )
+
+        val mongoRepos = MongoRepositories(
+            MongoClient.create(Config.mongoUri)
+                .getDatabase(Config.dbName)
+        )
+
+        migrateUsers(roomRepos.userRepository, mongoRepos.userRepository)
+        migrateChats(roomRepos.chatRepository, mongoRepos.chatRepository)
+        migrateMessages(roomRepos.messageRepository, mongoRepos.messageRepository)
+        migrateFiles(roomRepos.fileRepository, mongoRepos.fileRepository)
+        migrateBlocks(roomRepos.blockRepository, mongoRepos.blockRepository)
+        migrateMessageHistory(roomRepos.messageHistoryRepository, mongoRepos.messageHistoryRepository)
+        migrateAppSettings(roomRepos.appSettingsRepository, mongoRepos.appSettingsRepository)
+    }
+
+    private suspend fun migrateUsers(
+        source: IUserRepository,
+        destination: IUserRepository
+    ) {
+        val users = source.getAllUsers()
+        users.forEach { user ->
+            destination.addUser(user)
+        }
+    }
+    private suspend fun migrateChats(
+        source: IChatRepository,
+        destination: IChatRepository
+    ) {
+        val chats = source.getAllChats()
+        chats.forEach { chat ->
+            destination.addChat(chat)
+        }
+    }
+    private suspend fun migrateMessages(
+        source: IMessageRepository,
+        destination: IMessageRepository
+    ) {
+        val messages = source.getAllMessages()
+        messages.forEach { message ->
+            destination.addMessage(message)
+        }
+    }
+    private suspend fun migrateFiles(
+        source: IFileRepository,
+        destination: IFileRepository
+    ) {
+        val files = source.getAllFiles()
+        files.forEach { file ->
+            destination.addFile(file)
+        }
+    }
+    private suspend fun migrateBlocks(
+        source: IBlockRepository,
+        destination: IBlockRepository
+    ) {
+        val blocks = source.getAllBlocks()
+        blocks.forEach { block ->
+            destination.addBlock(block)
+        }
+    }
+    private suspend fun migrateMessageHistory(
+        source: IMessageHistoryRepository,
+        destination: IMessageHistoryRepository
+    ) {
+        val historyEntries = source.getAllMessageHistory()
+        historyEntries.forEach { entry ->
+            destination.addMessageHistory(entry)
+        }
+    }
+    private suspend fun migrateAppSettings(
+        source: IAppSettingsRepository,
+        destination: IAppSettingsRepository
+    ) {
+        val settings = source.getAllSettings()
+        settings.forEach { (type, value) ->
+            destination.updateSetting(type, value)
+        }
+    }
 }
 
 // Классы-контейнеры для репозиториев

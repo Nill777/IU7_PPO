@@ -13,4 +13,7 @@ interface MessageHistoryDao {
 
     @Query("SELECT * FROM message_history WHERE message_id = :messageId")
     suspend fun getHistoryForMessage(messageId: UUID): List<MessageHistoryEntity>
+
+    @Query("SELECT * FROM message_history")
+    suspend fun getAllMessageHistory(): List<MessageHistoryEntity>
 }

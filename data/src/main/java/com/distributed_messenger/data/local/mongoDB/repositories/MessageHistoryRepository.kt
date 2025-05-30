@@ -34,6 +34,13 @@ class MongoMessageHistoryRepository(
                 .mapNotNull { it.toMessageHistory() }
         }
 
+    override suspend fun getAllMessageHistory(): List<MessageHistory> =
+        loggingWrapper {
+            collection.find()
+                .toList()
+                .mapNotNull { it.toMessageHistory() }
+        }
+
     private fun MessageHistory.toDocument(): Document {
         return Document().apply {
             put("_id", historyId.toString())

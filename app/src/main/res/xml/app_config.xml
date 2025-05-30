@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
     <logDir dir="logDir"/>
-    <dbType type="mongodb"/>
+    <dbType type="room"/>
     <db name="messenger_db" version="2"/>
     <mongoUri uri="mongodb://10.0.2.2"/>
 </config>

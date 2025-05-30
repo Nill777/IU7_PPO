@@ -72,6 +72,7 @@ ksp {
 
 dependencies {
     implementation(project(":logger"))
+    implementation(project(":core"))
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(project(":presenter"))

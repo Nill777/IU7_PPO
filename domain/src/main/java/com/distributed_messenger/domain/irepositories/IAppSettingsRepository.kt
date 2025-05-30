@@ -1,6 +1,7 @@
 package com.distributed_messenger.domain.irepositories
 
 import com.distributed_messenger.core.AppSettingType
+import com.distributed_messenger.core.MessageHistory
 
 interface IAppSettingsRepository {
     suspend fun initializeDefaultSettings()

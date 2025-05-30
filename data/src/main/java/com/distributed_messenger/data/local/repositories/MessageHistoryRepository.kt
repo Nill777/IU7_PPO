@@ -29,6 +29,12 @@ class MessageHistoryRepository(private val messageHistoryDao: MessageHistoryDao)
                 .map { it.toDomain() }
         }
 
+    override suspend fun getAllMessageHistory(): List<MessageHistory> =
+        loggingWrapper {
+            messageHistoryDao.getAllMessageHistory()
+                .map { it.toDomain() }
+        }
+
     private fun MessageHistory.toEntity(): MessageHistoryEntity =
         MessageHistoryEntity(
             historyId = historyId,
